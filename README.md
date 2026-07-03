@@ -41,6 +41,7 @@ Generated artifacts:
 
 Documentation guide:
 
+- [`docs/V1_RELEASE_NOTES.md`](docs/V1_RELEASE_NOTES.md) ? summarizes the completed V1 scope and V2 candidates.
 - [`docs/PORTFOLIO_PITCH.md`](docs/PORTFOLIO_PITCH.md) ? translates the project into resume, portfolio, and interview language.
 - [`docs/ARCHITECTURE_DIAGRAM.md`](docs/ARCHITECTURE_DIAGRAM.md) ? visualizes the end-to-end workflow, SQL layers, decision flow, and scenario matrix.
 - [`docs/CASE_STUDY.md`](docs/CASE_STUDY.md) ? summarizes the project as a portfolio case study.
