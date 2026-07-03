@@ -41,6 +41,7 @@ Generated artifacts:
 
 Documentation guide:
 
+- [`docs/PORTFOLIO_PITCH.md`](docs/PORTFOLIO_PITCH.md) ? translates the project into resume, portfolio, and interview language.
 - [`docs/ARCHITECTURE_DIAGRAM.md`](docs/ARCHITECTURE_DIAGRAM.md) ? visualizes the end-to-end workflow, SQL layers, decision flow, and scenario matrix.
 - [`docs/CASE_STUDY.md`](docs/CASE_STUDY.md) ? summarizes the project as a portfolio case study.
 - [`docs/REVIEW_GUIDE.md`](docs/REVIEW_GUIDE.md) ? provides a 5-minute review path for portfolio reviewers.
