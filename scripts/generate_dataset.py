@@ -13,33 +13,43 @@ from __future__ import annotations
 import argparse
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable
+from typing import Any, Iterable
 from uuid import NAMESPACE_DNS, uuid5
 
 import numpy as np
 import pandas as pd
 
 
-SCENARIOS = {
+SCENARIOS: dict[str, dict[str, Any]] = {
     "strong_positive": {
         "seed_offset": 0,
         "variant_b_activation_lift": 0.055,
         "variant_b_revisit_adjustment": 0.00,
+        "invalid_variant_rows": 0,
     },
     "guardrail_risk": {
         "seed_offset": 101,
         "variant_b_activation_lift": 0.055,
         "variant_b_revisit_adjustment": -0.12,
+        "invalid_variant_rows": 0,
     },
     "weak_evidence": {
         "seed_offset": 202,
         "variant_b_activation_lift": 0.012,
         "variant_b_revisit_adjustment": 0.00,
+        "invalid_variant_rows": 0,
     },
     "neutral": {
         "seed_offset": 303,
         "variant_b_activation_lift": -0.010,
         "variant_b_revisit_adjustment": 0.00,
+        "invalid_variant_rows": 0,
+    },
+    "quality_failure": {
+        "seed_offset": 404,
+        "variant_b_activation_lift": 0.055,
+        "variant_b_revisit_adjustment": 0.00,
+        "invalid_variant_rows": 25,
     },
 }
 
@@ -54,7 +64,7 @@ class DatasetConfig:
     scenario: str = "strong_positive"
 
     @property
-    def scenario_config(self) -> dict[str, float]:
+    def scenario_config(self) -> dict[str, Any]:
         return SCENARIOS[self.scenario]
 
     @property
@@ -119,6 +129,11 @@ def create_experiments(config: DatasetConfig, users: pd.DataFrame, rng: np.rando
     experiments["variant"] = rng.choice(["A", "B"], size=len(users), p=[0.50, 0.50])
     experiments["assigned_at"] = experiments["signup_at"]
     experiments["scenario"] = config.scenario
+
+    invalid_variant_rows = int(config.scenario_config.get("invalid_variant_rows", 0))
+    if invalid_variant_rows > 0:
+        experiments.loc[experiments.index[:invalid_variant_rows], "variant"] = "C"
+
     return experiments[["user_id", "experiment_name", "variant", "assigned_at", "scenario"]]
 
 
