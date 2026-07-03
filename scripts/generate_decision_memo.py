@@ -48,6 +48,7 @@ def build_memo(quality: dict[str, Any], experiment: dict[str, Any]) -> str:
     variant_b = experiment.get("variant_b", {})
     ci = experiment.get("confidence_interval_absolute_lift", {})
     guardrail_status = experiment.get("guardrail_status", "UNKNOWN")
+    scenario = experiment.get("scenario", "unknown")
 
     if result == "Ship":
         summary = "Variant B improved the primary metric with strong evidence, while the D7 revisit guardrail stayed within the acceptable range."
@@ -60,6 +61,10 @@ def build_memo(quality: dict[str, Any], experiment: dict[str, Any]) -> str:
 
     lines = [
         "# Decision Memo: Onboarding Variant B",
+        "",
+        "## Scenario",
+        "",
+        str(scenario),
         "",
         "## Decision",
         "",
@@ -109,6 +114,7 @@ def main() -> None:
 
     print("\nDecision memo")
     print("-" * 48)
+    print(f"scenario: {experiment.get('scenario', 'unknown')}")
     print(f"decision: {pick_result(quality, experiment)}")
     print("-" * 48)
     print(f"Memo: {MEMO_PATH.relative_to(ROOT_DIR)}")
