@@ -93,10 +93,10 @@
     <div class="card"><div class="label">Quality</div><div class="value">PASS</div></div>
     <div class="card"><div class="label">Guardrail</div><div class="value">PASS</div><div class="note">D7 revisit rate</div></div>
     <div class="card"><div class="label">Mart tables</div><div class="value">4</div></div>
-    <div class="card"><div class="label">A activation</div><div class="value">29.32%</div></div>
-    <div class="card"><div class="label">B activation</div><div class="value">34.58%</div></div>
-    <div class="card"><div class="label">Absolute lift</div><div class="value">5.26%</div></div>
-    <div class="card"><div class="label">D7 revisit delta</div><div class="value">2.23%</div></div>
+    <div class="card"><div class="label">A activation</div><div class="value">30.15%</div></div>
+    <div class="card"><div class="label">B activation</div><div class="value">34.12%</div></div>
+    <div class="card"><div class="label">Absolute lift</div><div class="value">3.97%</div></div>
+    <div class="card"><div class="label">D7 revisit delta</div><div class="value">0.97%</div></div>
     <div class="card"><div class="label">p-value</div><div class="value">0.0000</div></div>
   </section>
 
@@ -124,9 +124,9 @@
     <h2>Guardrail Summary</h2>
     <table>
       <tr><th>Metric</th><td>d7_revisit_rate</td></tr>
-      <tr><th>Variant A D7 revisit</th><td>47.26%</td></tr>
-      <tr><th>Variant B D7 revisit</th><td>49.49%</td></tr>
-      <tr><th>Delta</th><td>2.23%</td></tr>
+      <tr><th>Variant A D7 revisit</th><td>48.17%</td></tr>
+      <tr><th>Variant B D7 revisit</th><td>49.14%</td></tr>
+      <tr><th>Delta</th><td>0.97%</td></tr>
       <tr><th>Status</th><td>PASS</td></tr>
     </table>
   </section>
@@ -134,6 +134,10 @@
   <section>
     <h2>Decision Memo</h2>
     <pre># Decision Memo: Onboarding Variant B
+
+## Scenario
+
+strong_positive
 
 ## Decision
 
@@ -145,15 +149,15 @@ Variant B improved the primary metric with strong evidence, while the D7 revisit
 
 ## Evidence
 
-- Variant A activation: 29.32%
-- Variant B activation: 34.58%
-- Absolute lift: 5.26%
-- Relative lift: 17.95%
+- Variant A activation: 30.15%
+- Variant B activation: 34.12%
+- Absolute lift: 3.97%
+- Relative lift: 13.16%
 - p-value: 0.0000
-- Confidence interval: 3.44% to 7.09%
-- Variant A D7 revisit: 47.26%
-- Variant B D7 revisit: 49.49%
-- D7 revisit delta: 2.23%
+- Confidence interval: 2.14% to 5.80%
+- Variant A D7 revisit: 48.17%
+- Variant B D7 revisit: 49.14%
+- D7 revisit delta: 0.97%
 - Guardrail status: PASS
 - Quality status: PASS
 
@@ -169,7 +173,7 @@ This memo uses synthetic data and demonstrates the workflow, not real product pe
 
 ## Generated At
 
-2026-07-03T16:27:58.413428+00:00
+2026-07-03T16:35:59.047726+00:00
 </pre>
   </section>
 </main>

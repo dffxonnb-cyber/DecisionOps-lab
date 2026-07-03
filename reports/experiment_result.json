@@ -1,247 +1,248 @@
 {
+  "scenario": "strong_positive",
   "experiment_name": "onboarding_v2",
-  "generated_at": "2026-07-03T16:27:57.651135+00:00",
+  "generated_at": "2026-07-03T16:35:58.330527+00:00",
   "primary_metric": "activation_rate",
   "guardrail_metric": "d7_revisit_rate",
   "variant_a": {
-    "users": 4983,
-    "activated_users": 1461,
-    "activation_rate": 0.293197,
-    "d1_revisit_rate": 0.136865,
-    "d3_revisit_rate": 0.358218,
-    "d7_revisit_rate": 0.472607,
-    "avg_sessions": 1.802729,
-    "avg_session_seconds": 1860.959004
+    "users": 4982,
+    "activated_users": 1502,
+    "activation_rate": 0.301485,
+    "d1_revisit_rate": 0.144922,
+    "d3_revisit_rate": 0.355279,
+    "d7_revisit_rate": 0.481734,
+    "avg_sessions": 1.813729,
+    "avg_session_seconds": 1860.113696
   },
   "variant_b": {
-    "users": 5017,
-    "activated_users": 1735,
-    "activation_rate": 0.345824,
-    "d1_revisit_rate": 0.140323,
-    "d3_revisit_rate": 0.369942,
-    "d7_revisit_rate": 0.494917,
-    "avg_sessions": 1.827786,
-    "avg_session_seconds": 1860.715893
+    "users": 5018,
+    "activated_users": 1712,
+    "activation_rate": 0.341172,
+    "d1_revisit_rate": 0.150458,
+    "d3_revisit_rate": 0.373655,
+    "d7_revisit_rate": 0.491431,
+    "avg_sessions": 1.848745,
+    "avg_session_seconds": 1852.247941
   },
-  "absolute_lift": 0.052627,
-  "relative_lift": 0.179494,
-  "d7_revisit_delta": 0.02231,
+  "absolute_lift": 0.039687,
+  "relative_lift": 0.131638,
+  "d7_revisit_delta": 0.009697,
   "guardrail_status": "PASS",
-  "z_stat": 5.642782,
-  "p_value": 0.0,
+  "z_stat": 4.248928,
+  "p_value": 1.1e-05,
   "confidence_interval_absolute_lift": {
-    "low": 0.03438,
-    "high": 0.070875
+    "low": 0.021398,
+    "high": 0.057974
   },
   "segment_diagnostics": [
     {
       "dimension": "acquisition_channel",
       "segment": "organic",
       "variant_a": {
-        "users": 2198,
-        "activated_users": 712,
-        "activation_rate": 0.323931,
-        "d7_revisit_rate": 0.485896
+        "users": 2119,
+        "activated_users": 664,
+        "activation_rate": 0.313355,
+        "d7_revisit_rate": 0.479
       },
       "variant_b": {
-        "users": 2156,
-        "activated_users": 804,
-        "activation_rate": 0.372913,
-        "d7_revisit_rate": 0.503247
+        "users": 2210,
+        "activated_users": 795,
+        "activation_rate": 0.359729,
+        "d7_revisit_rate": 0.490045
       },
-      "absolute_lift": 0.048982,
-      "relative_lift": 0.151211,
-      "d7_revisit_delta": 0.017351
+      "absolute_lift": 0.046374,
+      "relative_lift": 0.147992,
+      "d7_revisit_delta": 0.011045
     },
     {
       "dimension": "acquisition_channel",
       "segment": "paid_search",
       "variant_a": {
-        "users": 1213,
-        "activated_users": 307,
-        "activation_rate": 0.253092,
-        "d7_revisit_rate": 0.458368
+        "users": 1247,
+        "activated_users": 354,
+        "activation_rate": 0.283881,
+        "d7_revisit_rate": 0.47073
       },
       "variant_b": {
-        "users": 1309,
-        "activated_users": 414,
-        "activation_rate": 0.316272,
-        "d7_revisit_rate": 0.471352
+        "users": 1215,
+        "activated_users": 359,
+        "activation_rate": 0.295473,
+        "d7_revisit_rate": 0.474074
       },
-      "absolute_lift": 0.06318,
-      "relative_lift": 0.249633,
-      "d7_revisit_delta": 0.012984
+      "absolute_lift": 0.011592,
+      "relative_lift": 0.040834,
+      "d7_revisit_delta": 0.003344
     },
     {
       "dimension": "acquisition_channel",
       "segment": "referral",
       "variant_a": {
-        "users": 508,
-        "activated_users": 175,
-        "activation_rate": 0.344488,
-        "d7_revisit_rate": 0.503937
+        "users": 516,
+        "activated_users": 171,
+        "activation_rate": 0.331395,
+        "d7_revisit_rate": 0.531008
       },
       "variant_b": {
-        "users": 502,
-        "activated_users": 187,
-        "activation_rate": 0.37251,
-        "d7_revisit_rate": 0.517928
+        "users": 493,
+        "activated_users": 181,
+        "activation_rate": 0.36714,
+        "d7_revisit_rate": 0.507099
       },
-      "absolute_lift": 0.028022,
-      "relative_lift": 0.081344,
-      "d7_revisit_delta": 0.013991
+      "absolute_lift": 0.035745,
+      "relative_lift": 0.107862,
+      "d7_revisit_delta": -0.023909
     },
     {
       "dimension": "acquisition_channel",
       "segment": "social",
       "variant_a": {
-        "users": 1064,
-        "activated_users": 267,
-        "activation_rate": 0.25094,
-        "d7_revisit_rate": 0.446429
+        "users": 1100,
+        "activated_users": 313,
+        "activation_rate": 0.284545,
+        "d7_revisit_rate": 0.476364
       },
       "variant_b": {
-        "users": 1050,
-        "activated_users": 330,
-        "activation_rate": 0.314286,
-        "d7_revisit_rate": 0.49619
+        "users": 1100,
+        "activated_users": 377,
+        "activation_rate": 0.342727,
+        "d7_revisit_rate": 0.506364
       },
-      "absolute_lift": 0.063346,
-      "relative_lift": 0.252435,
-      "d7_revisit_delta": 0.049761
+      "absolute_lift": 0.058182,
+      "relative_lift": 0.204474,
+      "d7_revisit_delta": 0.03
     },
     {
       "dimension": "device_type",
       "segment": "desktop",
       "variant_a": {
-        "users": 1239,
-        "activated_users": 348,
-        "activation_rate": 0.280872,
-        "d7_revisit_rate": 0.473769
+        "users": 1222,
+        "activated_users": 355,
+        "activation_rate": 0.290507,
+        "d7_revisit_rate": 0.479542
       },
       "variant_b": {
-        "users": 1198,
-        "activated_users": 364,
-        "activation_rate": 0.30384,
-        "d7_revisit_rate": 0.464942
+        "users": 1210,
+        "activated_users": 414,
+        "activation_rate": 0.342149,
+        "d7_revisit_rate": 0.486777
       },
-      "absolute_lift": 0.022968,
-      "relative_lift": 0.081774,
-      "d7_revisit_delta": -0.008827
+      "absolute_lift": 0.051642,
+      "relative_lift": 0.177765,
+      "d7_revisit_delta": 0.007235
     },
     {
       "dimension": "device_type",
       "segment": "mobile",
       "variant_a": {
-        "users": 3351,
-        "activated_users": 1012,
-        "activation_rate": 0.301999,
-        "d7_revisit_rate": 0.476873
+        "users": 3367,
+        "activated_users": 1039,
+        "activation_rate": 0.308583,
+        "d7_revisit_rate": 0.485298
       },
       "variant_b": {
-        "users": 3430,
-        "activated_users": 1247,
-        "activation_rate": 0.363557,
-        "d7_revisit_rate": 0.506706
+        "users": 3422,
+        "activated_users": 1174,
+        "activation_rate": 0.343074,
+        "d7_revisit_rate": 0.49474
       },
-      "absolute_lift": 0.061558,
-      "relative_lift": 0.203835,
-      "d7_revisit_delta": 0.029833
+      "absolute_lift": 0.034491,
+      "relative_lift": 0.111772,
+      "d7_revisit_delta": 0.009442
     },
     {
       "dimension": "device_type",
       "segment": "tablet",
       "variant_a": {
         "users": 393,
-        "activated_users": 101,
-        "activation_rate": 0.256997,
-        "d7_revisit_rate": 0.43257
+        "activated_users": 108,
+        "activation_rate": 0.274809,
+        "d7_revisit_rate": 0.458015
       },
       "variant_b": {
-        "users": 389,
+        "users": 386,
         "activated_users": 124,
-        "activation_rate": 0.318766,
-        "d7_revisit_rate": 0.48329
+        "activation_rate": 0.321244,
+        "d7_revisit_rate": 0.476684
       },
-      "absolute_lift": 0.061769,
-      "relative_lift": 0.240349,
-      "d7_revisit_delta": 0.05072
+      "absolute_lift": 0.046435,
+      "relative_lift": 0.168972,
+      "d7_revisit_delta": 0.018669
     },
     {
       "dimension": "age_group",
       "segment": "10s",
       "variant_a": {
-        "users": 767,
-        "activated_users": 232,
-        "activation_rate": 0.302477,
-        "d7_revisit_rate": 0.449804
+        "users": 803,
+        "activated_users": 227,
+        "activation_rate": 0.28269,
+        "d7_revisit_rate": 0.486924
       },
       "variant_b": {
-        "users": 796,
-        "activated_users": 270,
-        "activation_rate": 0.339196,
-        "d7_revisit_rate": 0.46608
+        "users": 760,
+        "activated_users": 266,
+        "activation_rate": 0.35,
+        "d7_revisit_rate": 0.484211
       },
-      "absolute_lift": 0.036719,
-      "relative_lift": 0.121394,
-      "d7_revisit_delta": 0.016276
+      "absolute_lift": 0.06731,
+      "relative_lift": 0.238105,
+      "d7_revisit_delta": -0.002713
     },
     {
       "dimension": "age_group",
       "segment": "20s",
       "variant_a": {
-        "users": 2226,
-        "activated_users": 688,
-        "activation_rate": 0.309075,
-        "d7_revisit_rate": 0.477538
+        "users": 2172,
+        "activated_users": 689,
+        "activation_rate": 0.317219,
+        "d7_revisit_rate": 0.490331
       },
       "variant_b": {
-        "users": 2216,
-        "activated_users": 791,
-        "activation_rate": 0.356949,
-        "d7_revisit_rate": 0.495939
+        "users": 2227,
+        "activated_users": 771,
+        "activation_rate": 0.346206,
+        "d7_revisit_rate": 0.500674
       },
-      "absolute_lift": 0.047874,
-      "relative_lift": 0.154894,
-      "d7_revisit_delta": 0.018401
+      "absolute_lift": 0.028987,
+      "relative_lift": 0.091379,
+      "d7_revisit_delta": 0.010343
     },
     {
       "dimension": "age_group",
       "segment": "30s",
       "variant_a": {
-        "users": 1395,
-        "activated_users": 370,
-        "activation_rate": 0.265233,
-        "d7_revisit_rate": 0.490323
+        "users": 1397,
+        "activated_users": 419,
+        "activation_rate": 0.299928,
+        "d7_revisit_rate": 0.47602
       },
       "variant_b": {
-        "users": 1410,
-        "activated_users": 475,
-        "activation_rate": 0.336879,
-        "d7_revisit_rate": 0.504965
+        "users": 1440,
+        "activated_users": 484,
+        "activation_rate": 0.336111,
+        "d7_revisit_rate": 0.485417
       },
-      "absolute_lift": 0.071646,
-      "relative_lift": 0.270125,
-      "d7_revisit_delta": 0.014642
+      "absolute_lift": 0.036183,
+      "relative_lift": 0.120639,
+      "d7_revisit_delta": 0.009397
     },
     {
       "dimension": "age_group",
       "segment": "40s+",
       "variant_a": {
-        "users": 595,
-        "activated_users": 171,
-        "activation_rate": 0.287395,
-        "d7_revisit_rate": 0.442017
+        "users": 610,
+        "activated_users": 167,
+        "activation_rate": 0.27377,
+        "d7_revisit_rate": 0.457377
       },
       "variant_b": {
-        "users": 595,
-        "activated_users": 199,
-        "activation_rate": 0.334454,
-        "d7_revisit_rate": 0.505882
+        "users": 591,
+        "activated_users": 191,
+        "activation_rate": 0.323181,
+        "d7_revisit_rate": 0.480541
       },
-      "absolute_lift": 0.047059,
-      "relative_lift": 0.163743,
-      "d7_revisit_delta": 0.063865
+      "absolute_lift": 0.049411,
+      "relative_lift": 0.180484,
+      "d7_revisit_delta": 0.023164
     }
   ],
   "suggested_decision": "Ship",

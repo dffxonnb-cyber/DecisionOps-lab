@@ -1,6 +1,6 @@
 {
   "status": "PASS",
-  "generated_at": "2026-07-03T16:27:50.781662+00:00",
+  "generated_at": "2026-07-03T16:35:53.917915+00:00",
   "summary": {
     "pass": 23,
     "warn": 0,
@@ -17,14 +17,14 @@
     {
       "name": "row_count_raw_events",
       "status": "PASS",
-      "observed": 41402,
-      "message": "raw_events has 41,402 rows"
+      "observed": 41676,
+      "message": "raw_events has 41,676 rows"
     },
     {
       "name": "row_count_raw_sessions",
       "status": "PASS",
-      "observed": 18153,
-      "message": "raw_sessions has 18,153 rows"
+      "observed": 18313,
+      "message": "raw_sessions has 18,313 rows"
     },
     {
       "name": "row_count_raw_experiments",
@@ -35,8 +35,8 @@
     {
       "name": "row_count_raw_payments",
       "status": "PASS",
-      "observed": 1026,
-      "message": "raw_payments has 1,026 rows"
+      "observed": 1113,
+      "message": "raw_payments has 1,113 rows"
     },
     {
       "name": "row_count_stg_users",
@@ -47,8 +47,8 @@
     {
       "name": "row_count_stg_events",
       "status": "PASS",
-      "observed": 41402,
-      "message": "stg_events has 41,402 rows"
+      "observed": 41676,
+      "message": "stg_events has 41,676 rows"
     },
     {
       "name": "row_count_int_user_activation",
@@ -139,18 +139,18 @@
       "status": "PASS",
       "observed": {
         "counts": {
-          "A": 4983,
-          "B": 5017
+          "A": 4982,
+          "B": 5018
         },
-        "b_share": 0.5017
+        "b_share": 0.5018
       },
-      "message": "Variant B share is 50.17%"
+      "message": "Variant B share is 50.18%"
     },
     {
       "name": "metric_range_activation_rate",
       "status": "PASS",
-      "observed": 0.3196,
-      "message": "Activation rate is 31.96%"
+      "observed": 0.3214,
+      "message": "Activation rate is 32.14%"
     }
   ]
 }

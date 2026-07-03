@@ -1,0 +1,52 @@
+{
+  "scenarios": [
+    {
+      "scenario": "strong_positive",
+      "quality_status": "PASS",
+      "decision": "Ship",
+      "variant_a_activation": 0.301485,
+      "variant_b_activation": 0.341172,
+      "absolute_lift": 0.039687,
+      "relative_lift": 0.131638,
+      "p_value": 1.1e-05,
+      "d7_revisit_delta": 0.009697,
+      "guardrail_status": "PASS"
+    },
+    {
+      "scenario": "guardrail_risk",
+      "quality_status": "PASS",
+      "decision": "Retest",
+      "variant_a_activation": 0.311678,
+      "variant_b_activation": 0.345042,
+      "absolute_lift": 0.033364,
+      "relative_lift": 0.107046,
+      "p_value": 0.000191,
+      "d7_revisit_delta": -0.161146,
+      "guardrail_status": "WARN"
+    },
+    {
+      "scenario": "weak_evidence",
+      "quality_status": "PASS",
+      "decision": "Retest",
+      "variant_a_activation": 0.300202,
+      "variant_b_activation": 0.306944,
+      "absolute_lift": 0.006742,
+      "relative_lift": 0.022458,
+      "p_value": 0.23172,
+      "d7_revisit_delta": 0.004633,
+      "guardrail_status": "PASS"
+    },
+    {
+      "scenario": "neutral",
+      "quality_status": "PASS",
+      "decision": "Hold",
+      "variant_a_activation": 0.291667,
+      "variant_b_activation": 0.288493,
+      "absolute_lift": -0.003174,
+      "relative_lift": -0.010882,
+      "p_value": 0.636708,
+      "d7_revisit_delta": -0.009009,
+      "guardrail_status": "PASS"
+    }
+  ]
+}
