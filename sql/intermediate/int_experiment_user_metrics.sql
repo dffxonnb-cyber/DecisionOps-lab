@@ -8,16 +8,7 @@ WITH session_summary AS (
     GROUP BY user_id
 )
 SELECT
-    a.user_id,
-    a.signup_at,
-    a.signup_date,
-    a.signup_week,
-    a.acquisition_channel,
-    a.device_type,
-    a.age_group,
-    a.experiment_name,
-    a.variant,
-    a.activated_24h,
+    a.*,
     COALESCE(r.revisited_d1, 0) AS revisited_d1,
     COALESCE(r.revisited_d3, 0) AS revisited_d3,
     COALESCE(r.revisited_d7, 0) AS revisited_d7,
