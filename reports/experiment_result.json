@@ -1,11 +1,15 @@
 {
   "experiment_name": "onboarding_v2",
-  "generated_at": "2026-07-03T13:13:45.626566+00:00",
+  "generated_at": "2026-07-03T14:20:31.402575+00:00",
   "primary_metric": "activation_rate",
+  "guardrail_metric": "d7_revisit_rate",
   "variant_a": {
     "users": 4983,
     "activated_users": 1461,
     "activation_rate": 0.293197,
+    "d1_revisit_rate": 0.136865,
+    "d3_revisit_rate": 0.358218,
+    "d7_revisit_rate": 0.472607,
     "avg_sessions": 1.802729,
     "avg_session_seconds": 1860.959004
   },
@@ -13,11 +17,16 @@
     "users": 5017,
     "activated_users": 1735,
     "activation_rate": 0.345824,
+    "d1_revisit_rate": 0.140323,
+    "d3_revisit_rate": 0.369942,
+    "d7_revisit_rate": 0.494917,
     "avg_sessions": 1.827786,
     "avg_session_seconds": 1860.715893
   },
   "absolute_lift": 0.052627,
   "relative_lift": 0.179494,
+  "d7_revisit_delta": 0.02231,
+  "guardrail_status": "PASS",
   "z_stat": 5.642782,
   "p_value": 0.0,
   "confidence_interval_absolute_lift": {
@@ -31,15 +40,18 @@
       "variant_a": {
         "users": 2198,
         "activated_users": 712,
-        "activation_rate": 0.323931
+        "activation_rate": 0.323931,
+        "d7_revisit_rate": 0.485896
       },
       "variant_b": {
         "users": 2156,
         "activated_users": 804,
-        "activation_rate": 0.372913
+        "activation_rate": 0.372913,
+        "d7_revisit_rate": 0.503247
       },
       "absolute_lift": 0.048982,
-      "relative_lift": 0.151211
+      "relative_lift": 0.151211,
+      "d7_revisit_delta": 0.017351
     },
     {
       "dimension": "acquisition_channel",
@@ -47,15 +59,18 @@
       "variant_a": {
         "users": 1213,
         "activated_users": 307,
-        "activation_rate": 0.253092
+        "activation_rate": 0.253092,
+        "d7_revisit_rate": 0.458368
       },
       "variant_b": {
         "users": 1309,
         "activated_users": 414,
-        "activation_rate": 0.316272
+        "activation_rate": 0.316272,
+        "d7_revisit_rate": 0.471352
       },
       "absolute_lift": 0.06318,
-      "relative_lift": 0.249633
+      "relative_lift": 0.249633,
+      "d7_revisit_delta": 0.012984
     },
     {
       "dimension": "acquisition_channel",
@@ -63,15 +78,18 @@
       "variant_a": {
         "users": 508,
         "activated_users": 175,
-        "activation_rate": 0.344488
+        "activation_rate": 0.344488,
+        "d7_revisit_rate": 0.503937
       },
       "variant_b": {
         "users": 502,
         "activated_users": 187,
-        "activation_rate": 0.37251
+        "activation_rate": 0.37251,
+        "d7_revisit_rate": 0.517928
       },
       "absolute_lift": 0.028022,
-      "relative_lift": 0.081344
+      "relative_lift": 0.081344,
+      "d7_revisit_delta": 0.013991
     },
     {
       "dimension": "acquisition_channel",
@@ -79,15 +97,18 @@
       "variant_a": {
         "users": 1064,
         "activated_users": 267,
-        "activation_rate": 0.25094
+        "activation_rate": 0.25094,
+        "d7_revisit_rate": 0.446429
       },
       "variant_b": {
         "users": 1050,
         "activated_users": 330,
-        "activation_rate": 0.314286
+        "activation_rate": 0.314286,
+        "d7_revisit_rate": 0.49619
       },
       "absolute_lift": 0.063346,
-      "relative_lift": 0.252435
+      "relative_lift": 0.252435,
+      "d7_revisit_delta": 0.049761
     },
     {
       "dimension": "device_type",
@@ -95,15 +116,18 @@
       "variant_a": {
         "users": 1239,
         "activated_users": 348,
-        "activation_rate": 0.280872
+        "activation_rate": 0.280872,
+        "d7_revisit_rate": 0.473769
       },
       "variant_b": {
         "users": 1198,
         "activated_users": 364,
-        "activation_rate": 0.30384
+        "activation_rate": 0.30384,
+        "d7_revisit_rate": 0.464942
       },
       "absolute_lift": 0.022968,
-      "relative_lift": 0.081774
+      "relative_lift": 0.081774,
+      "d7_revisit_delta": -0.008827
     },
     {
       "dimension": "device_type",
@@ -111,15 +135,18 @@
       "variant_a": {
         "users": 3351,
         "activated_users": 1012,
-        "activation_rate": 0.301999
+        "activation_rate": 0.301999,
+        "d7_revisit_rate": 0.476873
       },
       "variant_b": {
         "users": 3430,
         "activated_users": 1247,
-        "activation_rate": 0.363557
+        "activation_rate": 0.363557,
+        "d7_revisit_rate": 0.506706
       },
       "absolute_lift": 0.061558,
-      "relative_lift": 0.203835
+      "relative_lift": 0.203835,
+      "d7_revisit_delta": 0.029833
     },
     {
       "dimension": "device_type",
@@ -127,15 +154,18 @@
       "variant_a": {
         "users": 393,
         "activated_users": 101,
-        "activation_rate": 0.256997
+        "activation_rate": 0.256997,
+        "d7_revisit_rate": 0.43257
       },
       "variant_b": {
         "users": 389,
         "activated_users": 124,
-        "activation_rate": 0.318766
+        "activation_rate": 0.318766,
+        "d7_revisit_rate": 0.48329
       },
       "absolute_lift": 0.061769,
-      "relative_lift": 0.240349
+      "relative_lift": 0.240349,
+      "d7_revisit_delta": 0.05072
     },
     {
       "dimension": "age_group",
@@ -143,15 +173,18 @@
       "variant_a": {
         "users": 767,
         "activated_users": 232,
-        "activation_rate": 0.302477
+        "activation_rate": 0.302477,
+        "d7_revisit_rate": 0.449804
       },
       "variant_b": {
         "users": 796,
         "activated_users": 270,
-        "activation_rate": 0.339196
+        "activation_rate": 0.339196,
+        "d7_revisit_rate": 0.46608
       },
       "absolute_lift": 0.036719,
-      "relative_lift": 0.121394
+      "relative_lift": 0.121394,
+      "d7_revisit_delta": 0.016276
     },
     {
       "dimension": "age_group",
@@ -159,15 +192,18 @@
       "variant_a": {
         "users": 2226,
         "activated_users": 688,
-        "activation_rate": 0.309075
+        "activation_rate": 0.309075,
+        "d7_revisit_rate": 0.477538
       },
       "variant_b": {
         "users": 2216,
         "activated_users": 791,
-        "activation_rate": 0.356949
+        "activation_rate": 0.356949,
+        "d7_revisit_rate": 0.495939
       },
       "absolute_lift": 0.047874,
-      "relative_lift": 0.154894
+      "relative_lift": 0.154894,
+      "d7_revisit_delta": 0.018401
     },
     {
       "dimension": "age_group",
@@ -175,15 +211,18 @@
       "variant_a": {
         "users": 1395,
         "activated_users": 370,
-        "activation_rate": 0.265233
+        "activation_rate": 0.265233,
+        "d7_revisit_rate": 0.490323
       },
       "variant_b": {
         "users": 1410,
         "activated_users": 475,
-        "activation_rate": 0.336879
+        "activation_rate": 0.336879,
+        "d7_revisit_rate": 0.504965
       },
       "absolute_lift": 0.071646,
-      "relative_lift": 0.270125
+      "relative_lift": 0.270125,
+      "d7_revisit_delta": 0.014642
     },
     {
       "dimension": "age_group",
@@ -191,15 +230,18 @@
       "variant_a": {
         "users": 595,
         "activated_users": 171,
-        "activation_rate": 0.287395
+        "activation_rate": 0.287395,
+        "d7_revisit_rate": 0.442017
       },
       "variant_b": {
         "users": 595,
         "activated_users": 199,
-        "activation_rate": 0.334454
+        "activation_rate": 0.334454,
+        "d7_revisit_rate": 0.505882
       },
       "absolute_lift": 0.047059,
-      "relative_lift": 0.163743
+      "relative_lift": 0.163743,
+      "d7_revisit_delta": 0.063865
     }
   ],
   "suggested_decision": "Ship",
