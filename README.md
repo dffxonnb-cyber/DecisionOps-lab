@@ -1,3 +1,5 @@
+[![Verify DecisionOps Lab](https://github.com/dffxonnb-cyber/DecisionOps-lab/actions/workflows/verify.yml/badge.svg)](https://github.com/dffxonnb-cyber/DecisionOps-lab/actions/workflows/verify.yml)
+
 # DecisionOps Lab
 
 > Most portfolio projects stop after analysis.  
