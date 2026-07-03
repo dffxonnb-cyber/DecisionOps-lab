@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.env
+.env.*
+
+# Data outputs
+*.duckdb
+*.duckdb.wal
+data/raw/*.csv
+data/processed/*.csv
+data/processed/*.duckdb
+reports/*.json
+reports/*.html
+
+# Keep generated decision memo if intentionally committed later
+# reports/decision_memo.md
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
