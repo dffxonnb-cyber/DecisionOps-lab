@@ -1,0 +1,207 @@
+{
+  "experiment_name": "onboarding_v2",
+  "generated_at": "2026-07-03T13:13:45.626566+00:00",
+  "primary_metric": "activation_rate",
+  "variant_a": {
+    "users": 4983,
+    "activated_users": 1461,
+    "activation_rate": 0.293197,
+    "avg_sessions": 1.802729,
+    "avg_session_seconds": 1860.959004
+  },
+  "variant_b": {
+    "users": 5017,
+    "activated_users": 1735,
+    "activation_rate": 0.345824,
+    "avg_sessions": 1.827786,
+    "avg_session_seconds": 1860.715893
+  },
+  "absolute_lift": 0.052627,
+  "relative_lift": 0.179494,
+  "z_stat": 5.642782,
+  "p_value": 0.0,
+  "confidence_interval_absolute_lift": {
+    "low": 0.03438,
+    "high": 0.070875
+  },
+  "segment_diagnostics": [
+    {
+      "dimension": "acquisition_channel",
+      "segment": "organic",
+      "variant_a": {
+        "users": 2198,
+        "activated_users": 712,
+        "activation_rate": 0.323931
+      },
+      "variant_b": {
+        "users": 2156,
+        "activated_users": 804,
+        "activation_rate": 0.372913
+      },
+      "absolute_lift": 0.048982,
+      "relative_lift": 0.151211
+    },
+    {
+      "dimension": "acquisition_channel",
+      "segment": "paid_search",
+      "variant_a": {
+        "users": 1213,
+        "activated_users": 307,
+        "activation_rate": 0.253092
+      },
+      "variant_b": {
+        "users": 1309,
+        "activated_users": 414,
+        "activation_rate": 0.316272
+      },
+      "absolute_lift": 0.06318,
+      "relative_lift": 0.249633
+    },
+    {
+      "dimension": "acquisition_channel",
+      "segment": "referral",
+      "variant_a": {
+        "users": 508,
+        "activated_users": 175,
+        "activation_rate": 0.344488
+      },
+      "variant_b": {
+        "users": 502,
+        "activated_users": 187,
+        "activation_rate": 0.37251
+      },
+      "absolute_lift": 0.028022,
+      "relative_lift": 0.081344
+    },
+    {
+      "dimension": "acquisition_channel",
+      "segment": "social",
+      "variant_a": {
+        "users": 1064,
+        "activated_users": 267,
+        "activation_rate": 0.25094
+      },
+      "variant_b": {
+        "users": 1050,
+        "activated_users": 330,
+        "activation_rate": 0.314286
+      },
+      "absolute_lift": 0.063346,
+      "relative_lift": 0.252435
+    },
+    {
+      "dimension": "device_type",
+      "segment": "desktop",
+      "variant_a": {
+        "users": 1239,
+        "activated_users": 348,
+        "activation_rate": 0.280872
+      },
+      "variant_b": {
+        "users": 1198,
+        "activated_users": 364,
+        "activation_rate": 0.30384
+      },
+      "absolute_lift": 0.022968,
+      "relative_lift": 0.081774
+    },
+    {
+      "dimension": "device_type",
+      "segment": "mobile",
+      "variant_a": {
+        "users": 3351,
+        "activated_users": 1012,
+        "activation_rate": 0.301999
+      },
+      "variant_b": {
+        "users": 3430,
+        "activated_users": 1247,
+        "activation_rate": 0.363557
+      },
+      "absolute_lift": 0.061558,
+      "relative_lift": 0.203835
+    },
+    {
+      "dimension": "device_type",
+      "segment": "tablet",
+      "variant_a": {
+        "users": 393,
+        "activated_users": 101,
+        "activation_rate": 0.256997
+      },
+      "variant_b": {
+        "users": 389,
+        "activated_users": 124,
+        "activation_rate": 0.318766
+      },
+      "absolute_lift": 0.061769,
+      "relative_lift": 0.240349
+    },
+    {
+      "dimension": "age_group",
+      "segment": "10s",
+      "variant_a": {
+        "users": 767,
+        "activated_users": 232,
+        "activation_rate": 0.302477
+      },
+      "variant_b": {
+        "users": 796,
+        "activated_users": 270,
+        "activation_rate": 0.339196
+      },
+      "absolute_lift": 0.036719,
+      "relative_lift": 0.121394
+    },
+    {
+      "dimension": "age_group",
+      "segment": "20s",
+      "variant_a": {
+        "users": 2226,
+        "activated_users": 688,
+        "activation_rate": 0.309075
+      },
+      "variant_b": {
+        "users": 2216,
+        "activated_users": 791,
+        "activation_rate": 0.356949
+      },
+      "absolute_lift": 0.047874,
+      "relative_lift": 0.154894
+    },
+    {
+      "dimension": "age_group",
+      "segment": "30s",
+      "variant_a": {
+        "users": 1395,
+        "activated_users": 370,
+        "activation_rate": 0.265233
+      },
+      "variant_b": {
+        "users": 1410,
+        "activated_users": 475,
+        "activation_rate": 0.336879
+      },
+      "absolute_lift": 0.071646,
+      "relative_lift": 0.270125
+    },
+    {
+      "dimension": "age_group",
+      "segment": "40s+",
+      "variant_a": {
+        "users": 595,
+        "activated_users": 171,
+        "activation_rate": 0.287395
+      },
+      "variant_b": {
+        "users": 595,
+        "activated_users": 199,
+        "activation_rate": 0.334454
+      },
+      "absolute_lift": 0.047059,
+      "relative_lift": 0.163743
+    }
+  ],
+  "suggested_decision": "Ship",
+  "claim_boundary": "Synthetic data only. This result demonstrates the experiment workflow, not real product performance."
+}

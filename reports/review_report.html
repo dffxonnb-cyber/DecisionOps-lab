@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DecisionOps Lab Review Report</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      background: #111827;
+      color: #e5e7eb;
+      line-height: 1.6;
+    }
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+    h1, h2 {
+      line-height: 1.2;
+    }
+    .hero {
+      border: 1px solid #374151;
+      background: #1f2937;
+      border-radius: 20px;
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 24px 0;
+    }
+    .card {
+      border: 1px solid #374151;
+      background: #0f172a;
+      border-radius: 16px;
+      padding: 18px;
+    }
+    .label {
+      color: #9ca3af;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .value {
+      font-size: 28px;
+      font-weight: 700;
+      margin-top: 8px;
+    }
+    pre {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      border: 1px solid #374151;
+      background: #020617;
+      border-radius: 16px;
+      padding: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+    }
+    th, td {
+      border-bottom: 1px solid #374151;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      color: #9ca3af;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <p class="label">DecisionOps Lab</p>
+    <h1>Raw events to product decision</h1>
+    <p>This report summarizes data quality, experiment evidence, and the final memo generated from synthetic product event data.</p>
+  </section>
+
+  <section class="grid">
+    <div class="card"><div class="label">Decision</div><div class="value">Ship</div></div>
+    <div class="card"><div class="label">Quality</div><div class="value">PASS</div></div>
+    <div class="card"><div class="label">A activation</div><div class="value">29.32%</div></div>
+    <div class="card"><div class="label">B activation</div><div class="value">34.58%</div></div>
+    <div class="card"><div class="label">Absolute lift</div><div class="value">5.26%</div></div>
+    <div class="card"><div class="label">p-value</div><div class="value">0.0000</div></div>
+  </section>
+
+  <section class="card">
+    <h2>Quality Summary</h2>
+    <table>
+      <tr><th>Status</th><td>PASS</td></tr>
+      <tr><th>Pass</th><td>23</td></tr>
+      <tr><th>Warn</th><td>0</td></tr>
+      <tr><th>Fail</th><td>0</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>Decision Memo</h2>
+    <pre># Decision Memo: Onboarding Variant B
+
+## Decision
+
+Ship
+
+## Summary
+
+Variant B improved the primary metric with strong evidence, and quality checks passed.
+
+## Evidence
+
+- Variant A activation: 29.32%
+- Variant B activation: 34.58%
+- Absolute lift: 5.26%
+- Relative lift: 17.95%
+- p-value: 0.0000
+- Confidence interval: 3.44% to 7.09%
+- Quality status: PASS
+
+## Next Actions
+
+1. Review the quality and experiment artifacts.
+2. Check segment diagnostics before changing the product default.
+3. Continue monitoring the primary metric after the next product change.
+
+## Claim Boundary
+
+This memo uses synthetic data and demonstrates the workflow, not real product performance.
+
+## Generated At
+
+2026-07-03T13:20:29.185490+00:00
+</pre>
+  </section>
+</main>
+</body>
+</html>

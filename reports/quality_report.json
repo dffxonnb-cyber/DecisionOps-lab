@@ -1,0 +1,156 @@
+{
+  "status": "PASS",
+  "generated_at": "2026-07-03T13:10:35.526677+00:00",
+  "summary": {
+    "pass": 23,
+    "warn": 0,
+    "fail": 0,
+    "total": 23
+  },
+  "checks": [
+    {
+      "name": "row_count_raw_users",
+      "status": "PASS",
+      "observed": 10000,
+      "message": "raw_users has 10,000 rows"
+    },
+    {
+      "name": "row_count_raw_events",
+      "status": "PASS",
+      "observed": 41402,
+      "message": "raw_events has 41,402 rows"
+    },
+    {
+      "name": "row_count_raw_sessions",
+      "status": "PASS",
+      "observed": 18153,
+      "message": "raw_sessions has 18,153 rows"
+    },
+    {
+      "name": "row_count_raw_experiments",
+      "status": "PASS",
+      "observed": 10000,
+      "message": "raw_experiments has 10,000 rows"
+    },
+    {
+      "name": "row_count_raw_payments",
+      "status": "PASS",
+      "observed": 1026,
+      "message": "raw_payments has 1,026 rows"
+    },
+    {
+      "name": "row_count_stg_users",
+      "status": "PASS",
+      "observed": 10000,
+      "message": "stg_users has 10,000 rows"
+    },
+    {
+      "name": "row_count_stg_events",
+      "status": "PASS",
+      "observed": 41402,
+      "message": "stg_events has 41,402 rows"
+    },
+    {
+      "name": "row_count_int_user_activation",
+      "status": "PASS",
+      "observed": 10000,
+      "message": "int_user_activation has 10,000 rows"
+    },
+    {
+      "name": "unique_raw_users_user_id",
+      "status": "PASS",
+      "observed": 0,
+      "message": "raw_users.user_id duplicate groups: 0"
+    },
+    {
+      "name": "unique_raw_events_event_id",
+      "status": "PASS",
+      "observed": 0,
+      "message": "raw_events.event_id duplicate groups: 0"
+    },
+    {
+      "name": "unique_raw_sessions_session_id",
+      "status": "PASS",
+      "observed": 0,
+      "message": "raw_sessions.session_id duplicate groups: 0"
+    },
+    {
+      "name": "null_raw_users_user_id",
+      "status": "PASS",
+      "observed": 0,
+      "message": "raw_users.user_id null count: 0"
+    },
+    {
+      "name": "null_raw_events_event_id",
+      "status": "PASS",
+      "observed": 0,
+      "message": "raw_events.event_id null count: 0"
+    },
+    {
+      "name": "null_raw_events_user_id",
+      "status": "PASS",
+      "observed": 0,
+      "message": "raw_events.user_id null count: 0"
+    },
+    {
+      "name": "null_raw_events_event_name",
+      "status": "PASS",
+      "observed": 0,
+      "message": "raw_events.event_name null count: 0"
+    },
+    {
+      "name": "null_raw_experiments_variant",
+      "status": "PASS",
+      "observed": 0,
+      "message": "raw_experiments.variant null count: 0"
+    },
+    {
+      "name": "accepted_values_raw_experiments_variant",
+      "status": "PASS",
+      "observed": 0,
+      "message": "raw_experiments.variant invalid value count: 0"
+    },
+    {
+      "name": "accepted_values_raw_users_device_type",
+      "status": "PASS",
+      "observed": 0,
+      "message": "raw_users.device_type invalid value count: 0"
+    },
+    {
+      "name": "accepted_values_raw_users_acquisition_channel",
+      "status": "PASS",
+      "observed": 0,
+      "message": "raw_users.acquisition_channel invalid value count: 0"
+    },
+    {
+      "name": "relation_raw_events_raw_users_user_id",
+      "status": "PASS",
+      "observed": 0,
+      "message": "raw_events.user_id values missing from raw_users: 0"
+    },
+    {
+      "name": "relation_raw_experiments_raw_users_user_id",
+      "status": "PASS",
+      "observed": 0,
+      "message": "raw_experiments.user_id values missing from raw_users: 0"
+    },
+    {
+      "name": "experiment_balance_onboarding_v2",
+      "status": "PASS",
+      "observed": {
+        "counts": {
+          "A": 4983,
+          "B": 5017
+        },
+        "b_share": 0.5017
+      },
+      "message": "Variant B share is 50.17%"
+    },
+    {
+      "name": "metric_range_activation_rate",
+      "status": "PASS",
+      "observed": 0.3196,
+      "message": "Activation rate is 31.96%"
+    }
+  ]
+}
