@@ -24,29 +24,8 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
-      - name: Generate synthetic dataset
-        run: python scripts/generate_dataset.py --scenario strong_positive
-
-      - name: Run SQL pipeline
-        run: python scripts/run_pipeline.py
-
-      - name: Run data quality checks
-        run: python scripts/run_quality_checks.py
-
-      - name: Run experiment analysis
-        run: python scripts/run_experiment_analysis.py
-
-      - name: Generate decision memo
-        run: python scripts/generate_decision_memo.py
-
-      - name: Generate reviewer report
-        run: python scripts/generate_review_report.py
-
-      - name: Run scenario matrix
-        run: python scripts/run_scenario_matrix.py
-
-      - name: Run tests
-        run: pytest
+      - name: Run full verification
+        run: python scripts/run_full_verification.py
 
       - name: Upload generated reports
         uses: actions/upload-artifact@v4
