@@ -1,5 +1,6 @@
 CREATE OR REPLACE TABLE mart_experiment_result AS
 SELECT
+    scenario,
     experiment_name,
     variant,
     COUNT(*) AS users,
@@ -11,4 +12,4 @@ SELECT
     AVG(session_count) AS avg_sessions,
     AVG(avg_session_seconds) AS avg_session_seconds
 FROM int_experiment_user_metrics
-GROUP BY experiment_name, variant;
+GROUP BY scenario, experiment_name, variant;
