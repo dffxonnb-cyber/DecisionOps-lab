@@ -1,7 +1,7 @@
 """Run the DecisionOps Lab SQL modeling pipeline.
 
-This script loads generated raw CSV files into DuckDB, runs currently available
-SQL models in dependency order, and writes a local analytics database to
+This script loads generated raw CSV files into DuckDB, runs SQL models in
+dependency order, and writes a local analytics database to
 `data/processed/decisionops.duckdb`.
 """
 
@@ -35,6 +35,10 @@ SQL_MODEL_ORDER = [
     "sql/intermediate/int_user_retention.sql",
     "sql/intermediate/int_experiment_user_metrics.sql",
     "sql/intermediate/int_session_funnel.sql",
+    "sql/marts/mart_experiment_result.sql",
+    "sql/marts/mart_segment_performance.sql",
+    "sql/marts/mart_retention_cohort.sql",
+    "sql/marts/mart_decision_summary.sql",
 ]
 
 
