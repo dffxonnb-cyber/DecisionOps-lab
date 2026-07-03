@@ -1,8 +1,5 @@
 """Generate a reproducible synthetic product event dataset for DecisionOps Lab.
 
-This script creates public-safe synthetic data for a routine / study habit app.
-It is intentionally deterministic: the same seed should generate the same files.
-
 Outputs:
 - data/raw/raw_users.csv
 - data/raw/raw_events.csv
@@ -13,13 +10,38 @@ Outputs:
 
 from __future__ import annotations
 
+import argparse
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
-from uuid import uuid5, NAMESPACE_DNS
+from uuid import NAMESPACE_DNS, uuid5
 
 import numpy as np
 import pandas as pd
+
+
+SCENARIOS = {
+    "strong_positive": {
+        "seed_offset": 0,
+        "variant_b_activation_lift": 0.055,
+        "variant_b_revisit_adjustment": 0.00,
+    },
+    "guardrail_risk": {
+        "seed_offset": 101,
+        "variant_b_activation_lift": 0.055,
+        "variant_b_revisit_adjustment": -0.12,
+    },
+    "weak_evidence": {
+        "seed_offset": 202,
+        "variant_b_activation_lift": 0.012,
+        "variant_b_revisit_adjustment": 0.00,
+    },
+    "neutral": {
+        "seed_offset": 303,
+        "variant_b_activation_lift": -0.010,
+        "variant_b_revisit_adjustment": 0.00,
+    },
+}
 
 
 @dataclass(frozen=True)
@@ -29,27 +51,22 @@ class DatasetConfig:
     start_date: str = "2026-01-01"
     end_date: str = "2026-03-31"
     experiment_name: str = "onboarding_v2"
+    scenario: str = "strong_positive"
+
+    @property
+    def scenario_config(self) -> dict[str, float]:
+        return SCENARIOS[self.scenario]
+
+    @property
+    def scenario_seed(self) -> int:
+        return self.seed + int(self.scenario_config["seed_offset"])
 
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 RAW_DIR = ROOT_DIR / "data" / "raw"
 
 
-EVENT_ORDER = [
-    "signup",
-    "onboarding_start",
-    "onboarding_complete",
-    "create_routine",
-    "complete_routine",
-    "return_visit",
-    "trial_start",
-    "paid_conversion",
-    "refund",
-]
-
-
 def stable_id(prefix: str, *parts: object) -> str:
-    """Create a stable deterministic id from input parts."""
     key = "|".join(str(part) for part in parts)
     return f"{prefix}_{uuid5(NAMESPACE_DNS, key).hex[:16]}"
 
@@ -58,12 +75,7 @@ def ensure_dirs() -> None:
     RAW_DIR.mkdir(parents=True, exist_ok=True)
 
 
-def random_datetimes(
-    rng: np.random.Generator,
-    start: str,
-    end: str,
-    size: int,
-) -> pd.Series:
+def random_datetimes(rng: np.random.Generator, start: str, end: str, size: int) -> pd.Series:
     start_ts = pd.Timestamp(start)
     end_ts = pd.Timestamp(end)
     seconds = int((end_ts - start_ts).total_seconds())
@@ -74,61 +86,43 @@ def random_datetimes(
 def create_users(config: DatasetConfig, rng: np.random.Generator) -> pd.DataFrame:
     user_ids = [f"user_{idx:05d}" for idx in range(1, config.user_count + 1)]
 
-    acquisition_channels = rng.choice(
-        ["organic", "paid_search", "social", "referral"],
-        size=config.user_count,
-        p=[0.43, 0.25, 0.22, 0.10],
-    )
-    device_types = rng.choice(
-        ["mobile", "desktop", "tablet"],
-        size=config.user_count,
-        p=[0.68, 0.24, 0.08],
-    )
-    age_groups = rng.choice(
-        ["10s", "20s", "30s", "40s+"],
-        size=config.user_count,
-        p=[0.16, 0.44, 0.28, 0.12],
-    )
-
-    signup_at = random_datetimes(rng, config.start_date, config.end_date, config.user_count)
-
     users = pd.DataFrame(
         {
             "user_id": user_ids,
-            "signup_at": signup_at.dt.strftime("%Y-%m-%d %H:%M:%S"),
-            "acquisition_channel": acquisition_channels,
-            "device_type": device_types,
-            "age_group": age_groups,
+            "signup_at": random_datetimes(rng, config.start_date, config.end_date, config.user_count).dt.strftime(
+                "%Y-%m-%d %H:%M:%S"
+            ),
+            "acquisition_channel": rng.choice(
+                ["organic", "paid_search", "social", "referral"],
+                size=config.user_count,
+                p=[0.43, 0.25, 0.22, 0.10],
+            ),
+            "device_type": rng.choice(
+                ["mobile", "desktop", "tablet"],
+                size=config.user_count,
+                p=[0.68, 0.24, 0.08],
+            ),
+            "age_group": rng.choice(
+                ["10s", "20s", "30s", "40s+"],
+                size=config.user_count,
+                p=[0.16, 0.44, 0.28, 0.12],
+            ),
         }
     ).sort_values("signup_at", ignore_index=True)
 
     return users
 
 
-def create_experiments(
-    config: DatasetConfig,
-    users: pd.DataFrame,
-    rng: np.random.Generator,
-) -> pd.DataFrame:
-    variants = rng.choice(["A", "B"], size=len(users), p=[0.50, 0.50])
-
+def create_experiments(config: DatasetConfig, users: pd.DataFrame, rng: np.random.Generator) -> pd.DataFrame:
     experiments = users[["user_id", "signup_at"]].copy()
     experiments["experiment_name"] = config.experiment_name
-    experiments["variant"] = variants
+    experiments["variant"] = rng.choice(["A", "B"], size=len(users), p=[0.50, 0.50])
     experiments["assigned_at"] = experiments["signup_at"]
+    experiments["scenario"] = config.scenario
+    return experiments[["user_id", "experiment_name", "variant", "assigned_at", "scenario"]]
 
-    return experiments[["user_id", "experiment_name", "variant", "assigned_at"]]
 
-
-def probability_adjustment(
-    users: pd.DataFrame,
-    experiments: pd.DataFrame,
-) -> pd.Series:
-    """Create user-level propensity for activation.
-
-    Variant B is intentionally better overall, but the lift varies by segment.
-    This gives the later experiment analysis something realistic to inspect.
-    """
+def probability_adjustment(users: pd.DataFrame, experiments: pd.DataFrame, config: DatasetConfig) -> pd.Series:
     base = pd.Series(0.34, index=users.index, dtype="float64")
 
     base += np.where(users["device_type"].eq("mobile"), 0.03, 0.00)
@@ -139,7 +133,8 @@ def probability_adjustment(
     base += np.where(users["age_group"].eq("20s"), 0.02, 0.00)
     base -= np.where(users["age_group"].eq("40s+"), 0.02, 0.00)
 
-    base += np.where(experiments["variant"].eq("B"), 0.055, 0.00)
+    lift = float(config.scenario_config["variant_b_activation_lift"])
+    base += np.where(experiments["variant"].eq("B"), lift, 0.00)
 
     return base.clip(0.05, 0.85)
 
@@ -165,6 +160,7 @@ def add_event(
 
 
 def create_events_and_sessions(
+    config: DatasetConfig,
     users: pd.DataFrame,
     experiments: pd.DataFrame,
     rng: np.random.Generator,
@@ -172,12 +168,17 @@ def create_events_and_sessions(
     events: list[dict[str, object]] = []
     sessions: list[dict[str, object]] = []
 
-    activation_p = probability_adjustment(users.reset_index(drop=True), experiments.reset_index(drop=True))
+    users_reset = users.reset_index(drop=True)
+    experiments_reset = experiments.reset_index(drop=True)
+    activation_p = probability_adjustment(users_reset, experiments_reset, config)
+    variant_by_user = dict(zip(experiments_reset["user_id"], experiments_reset["variant"], strict=True))
+    revisit_shift = float(config.scenario_config["variant_b_revisit_adjustment"])
 
-    for idx, user in users.reset_index(drop=True).iterrows():
+    for idx, user in users_reset.iterrows():
         user_id = str(user["user_id"])
         signup_at = pd.Timestamp(user["signup_at"])
         device_type = str(user["device_type"])
+        variant = variant_by_user[user_id]
 
         session_id = stable_id("session", user_id, "signup")
         sequence = 1
@@ -191,7 +192,6 @@ def create_events_and_sessions(
 
         onboarding_completed = rng.random() < 0.78
         activated = False
-        created_at = None
 
         if onboarding_completed:
             onboarding_complete = onboarding_start + pd.to_timedelta(int(rng.integers(120, 1800)), unit="s")
@@ -222,28 +222,29 @@ def create_events_and_sessions(
             }
         )
 
-        # Return visits create retention signals.
-        if activated:
-            return_probability = 0.47
-        else:
-            return_probability = 0.23
+        return_probability = 0.47 if activated else 0.23
+        if variant == "B":
+            return_probability += revisit_shift
+        return_probability = float(np.clip(return_probability, 0.02, 0.80))
 
         for day in [1, 3, 7, 14]:
-            if rng.random() < return_probability * (0.92 if day == 1 else 0.75 if day == 3 else 0.58 if day == 7 else 0.40):
+            day_weight = 0.92 if day == 1 else 0.75 if day == 3 else 0.58 if day == 7 else 0.40
+            if rng.random() < return_probability * day_weight:
                 visit_time = signup_at + pd.Timedelta(days=day) + pd.to_timedelta(
                     int(rng.integers(0, 24 * 3600)), unit="s"
                 )
                 return_session_id = stable_id("session", user_id, f"return_{day}")
+                duration_seconds = int(rng.integers(300, 2400))
                 add_event(events, user_id, return_session_id, "return_visit", visit_time, 1)
                 sessions.append(
                     {
                         "session_id": return_session_id,
                         "user_id": user_id,
                         "session_start": visit_time.strftime("%Y-%m-%d %H:%M:%S"),
-                        "session_end": (visit_time + pd.to_timedelta(int(rng.integers(300, 2400)), unit="s")).strftime(
+                        "session_end": (visit_time + pd.to_timedelta(duration_seconds, unit="s")).strftime(
                             "%Y-%m-%d %H:%M:%S"
                         ),
-                        "duration_seconds": int(rng.integers(300, 2400)),
+                        "duration_seconds": duration_seconds,
                         "device_type": device_type,
                         "session_type": f"return_d{day}",
                     }
@@ -255,11 +256,7 @@ def create_events_and_sessions(
     return events_df, sessions_df
 
 
-def create_payments(
-    users: pd.DataFrame,
-    events: pd.DataFrame,
-    rng: np.random.Generator,
-) -> pd.DataFrame:
+def create_payments(users: pd.DataFrame, events: pd.DataFrame, rng: np.random.Generator) -> pd.DataFrame:
     routine_users = set(events.loc[events["event_name"].eq("create_routine"), "user_id"])
     records: list[dict[str, object]] = []
 
@@ -314,23 +311,36 @@ def write_csv(df: pd.DataFrame, path: Path) -> None:
     df.to_csv(path, index=False, encoding="utf-8")
 
 
-def print_counts(tables: Iterable[tuple[str, pd.DataFrame]]) -> None:
+def print_counts(config: DatasetConfig, tables: Iterable[tuple[str, pd.DataFrame]]) -> None:
     print("\nGenerated raw dataset")
     print("-" * 48)
+    print(f"scenario                 {config.scenario}")
     for name, df in tables:
         print(f"{name:<24} {len(df):>8,} rows")
     print("-" * 48)
     print(f"Output directory: {RAW_DIR.relative_to(ROOT_DIR)}")
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Generate synthetic product event data.")
+    parser.add_argument(
+        "--scenario",
+        choices=sorted(SCENARIOS.keys()),
+        default="strong_positive",
+        help="Synthetic scenario to generate.",
+    )
+    return parser.parse_args()
+
+
 def main() -> None:
-    config = DatasetConfig()
-    rng = np.random.default_rng(config.seed)
+    args = parse_args()
+    config = DatasetConfig(scenario=args.scenario)
+    rng = np.random.default_rng(config.scenario_seed)
     ensure_dirs()
 
     users = create_users(config, rng)
     experiments = create_experiments(config, users, rng)
-    events, sessions = create_events_and_sessions(users, experiments, rng)
+    events, sessions = create_events_and_sessions(config, users, experiments, rng)
     payments = create_payments(users, events, rng)
 
     write_csv(users, RAW_DIR / "raw_users.csv")
@@ -340,13 +350,14 @@ def main() -> None:
     write_csv(payments, RAW_DIR / "raw_payments.csv")
 
     print_counts(
+        config,
         [
             ("raw_users.csv", users),
             ("raw_events.csv", events),
             ("raw_sessions.csv", sessions),
             ("raw_experiments.csv", experiments),
             ("raw_payments.csv", payments),
-        ]
+        ],
     )
 
 
