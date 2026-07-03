@@ -1,0 +1,6 @@
+pandas>=2.2.0
+numpy>=1.26.0
+duckdb>=1.0.0
+scipy>=1.12.0
+statsmodels>=0.14.0
+pytest>=8.0.0
