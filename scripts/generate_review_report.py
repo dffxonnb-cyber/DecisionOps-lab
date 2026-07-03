@@ -4,6 +4,7 @@ Inputs:
 - reports/quality_report.json
 - reports/experiment_result.json
 - reports/decision_memo.md
+- data/processed/decisionops.duckdb
 
 Output:
 - reports/review_report.html
@@ -16,6 +17,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+import duckdb
+
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 REPORTS_DIR = ROOT_DIR / "reports"
@@ -23,6 +26,13 @@ QUALITY_PATH = REPORTS_DIR / "quality_report.json"
 EXPERIMENT_PATH = REPORTS_DIR / "experiment_result.json"
 MEMO_PATH = REPORTS_DIR / "decision_memo.md"
 HTML_PATH = REPORTS_DIR / "review_report.html"
+DB_PATH = ROOT_DIR / "data" / "processed" / "decisionops.duckdb"
+MART_TABLES = [
+    "mart_experiment_result",
+    "mart_segment_performance",
+    "mart_retention_cohort",
+    "mart_decision_summary",
+]
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -43,7 +53,34 @@ def fmt_pct(value: Any) -> str:
     return f"{float(value):.2%}"
 
 
-def build_html(quality: dict[str, Any], experiment: dict[str, Any], memo: str) -> str:
+def fetch_mart_counts() -> dict[str, int]:
+    if not DB_PATH.exists():
+        return {}
+
+    with duckdb.connect(str(DB_PATH)) as connection:
+        existing_tables = {row[0] for row in connection.execute("SHOW TABLES").fetchall()}
+        counts = {}
+        for table in MART_TABLES:
+            if table in existing_tables:
+                counts[table] = int(connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0])
+        return counts
+
+
+def build_mart_rows(mart_counts: dict[str, int]) -> str:
+    if not mart_counts:
+        return '<tr><td colspan="2">No mart tables found. Run the SQL pipeline first.</td></tr>'
+
+    rows = []
+    for table in MART_TABLES:
+        value = mart_counts.get(table)
+        if value is None:
+            rows.append(f"<tr><th>{html.escape(table)}</th><td>missing</td></tr>")
+        else:
+            rows.append(f"<tr><th>{html.escape(table)}</th><td>{value:,} rows</td></tr>")
+    return "\n".join(rows)
+
+
+def build_html(quality: dict[str, Any], experiment: dict[str, Any], memo: str, mart_counts: dict[str, int]) -> str:
     variant_a = experiment.get("variant_a", {})
     variant_b = experiment.get("variant_b", {})
     decision = "Unknown"
@@ -55,6 +92,7 @@ def build_html(quality: dict[str, Any], experiment: dict[str, Any], memo: str) -
 
     escaped_memo = html.escape(memo)
     guardrail_status = html.escape(str(experiment.get("guardrail_status", "UNKNOWN")))
+    mart_rows = build_mart_rows(mart_counts)
 
     return f"""
 <!doctype html>
@@ -97,6 +135,7 @@ def build_html(quality: dict[str, Any], experiment: dict[str, Any], memo: str) -
       background: #0f172a;
       border-radius: 16px;
       padding: 18px;
+      margin-bottom: 24px;
     }}
     .label {{
       color: #9ca3af;
@@ -143,18 +182,26 @@ def build_html(quality: dict[str, Any], experiment: dict[str, Any], memo: str) -
   <section class="hero">
     <p class="label">DecisionOps Lab</p>
     <h1>Raw events to product decision</h1>
-    <p>This report summarizes data quality, experiment evidence, guardrail status, and the final memo generated from synthetic product event data.</p>
+    <p>This report summarizes data quality, mart layer outputs, experiment evidence, guardrail status, and the final memo generated from synthetic product event data.</p>
   </section>
 
   <section class="grid">
     <div class="card"><div class="label">Decision</div><div class="value">{html.escape(decision)}</div></div>
     <div class="card"><div class="label">Quality</div><div class="value">{html.escape(str(quality.get('status', 'UNKNOWN')))}</div></div>
     <div class="card"><div class="label">Guardrail</div><div class="value">{guardrail_status}</div><div class="note">D7 revisit rate</div></div>
+    <div class="card"><div class="label">Mart tables</div><div class="value">{len(mart_counts)}</div></div>
     <div class="card"><div class="label">A activation</div><div class="value">{fmt_pct(variant_a.get('activation_rate'))}</div></div>
     <div class="card"><div class="label">B activation</div><div class="value">{fmt_pct(variant_b.get('activation_rate'))}</div></div>
     <div class="card"><div class="label">Absolute lift</div><div class="value">{fmt_pct(experiment.get('absolute_lift'))}</div></div>
     <div class="card"><div class="label">D7 revisit delta</div><div class="value">{fmt_pct(experiment.get('d7_revisit_delta'))}</div></div>
     <div class="card"><div class="label">p-value</div><div class="value">{float(experiment.get('p_value', 1)):.4f}</div></div>
+  </section>
+
+  <section class="card">
+    <h2>Mart Layer Summary</h2>
+    <table>
+      {mart_rows}
+    </table>
   </section>
 
   <section class="card">
@@ -192,7 +239,8 @@ def main() -> None:
     quality = load_json(QUALITY_PATH)
     experiment = load_json(EXPERIMENT_PATH)
     memo = load_text(MEMO_PATH)
-    html_report = build_html(quality, experiment, memo)
+    mart_counts = fetch_mart_counts()
+    html_report = build_html(quality, experiment, memo, mart_counts)
     HTML_PATH.write_text(html_report, encoding="utf-8")
 
     print("\nReviewer report")
