@@ -1,6 +1,7 @@
 CREATE OR REPLACE TABLE mart_segment_performance AS
 WITH by_channel AS (
     SELECT
+        scenario,
         'acquisition_channel' AS segment_dimension,
         acquisition_channel AS segment_value,
         variant,
@@ -8,10 +9,11 @@ WITH by_channel AS (
         AVG(activated_24h) AS activation_rate,
         AVG(revisited_d7) AS d7_revisit_rate
     FROM int_experiment_user_metrics
-    GROUP BY acquisition_channel, variant
+    GROUP BY scenario, acquisition_channel, variant
 ),
 by_device AS (
     SELECT
+        scenario,
         'device_type' AS segment_dimension,
         device_type AS segment_value,
         variant,
@@ -19,10 +21,11 @@ by_device AS (
         AVG(activated_24h) AS activation_rate,
         AVG(revisited_d7) AS d7_revisit_rate
     FROM int_experiment_user_metrics
-    GROUP BY device_type, variant
+    GROUP BY scenario, device_type, variant
 ),
 by_age AS (
     SELECT
+        scenario,
         'age_group' AS segment_dimension,
         age_group AS segment_value,
         variant,
@@ -30,7 +33,7 @@ by_age AS (
         AVG(activated_24h) AS activation_rate,
         AVG(revisited_d7) AS d7_revisit_rate
     FROM int_experiment_user_metrics
-    GROUP BY age_group, variant
+    GROUP BY scenario, age_group, variant
 )
 SELECT * FROM by_channel
 UNION ALL
