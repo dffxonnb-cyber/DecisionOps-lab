@@ -24,6 +24,7 @@ same pipeline
 | `guardrail_risk` | Variant B improves activation but D7 revisit weakens | Retest |
 | `weak_evidence` | Variant B improves activation only slightly | Retest |
 | `neutral` | Variant B does not improve activation meaningfully | Hold |
+| `quality_failure` | Raw experiment data contains invalid variant values | Investigate |
 
 ## How to Run One Scenario
 
@@ -61,7 +62,7 @@ After the matrix is generated, the script restores the default `strong_positive`
 
 ## Scenario Matrix Output
 
-The scenario matrix summarizes the decision workflow across four generated conditions:
+The scenario matrix summarizes the decision workflow across five generated conditions:
 
 | Field | Meaning |
 | --- | --- |
@@ -73,6 +74,19 @@ The scenario matrix summarizes the decision workflow across four generated condi
 | `d7_revisit_delta` | Treatment minus baseline D7 revisit rate |
 | `guardrail_status` | PASS or WARN for the D7 revisit check |
 | `decision` | Final recommendation from the decision rule |
+
+## Quality Failure Scenario
+
+The `quality_failure` scenario intentionally places invalid variant values in the raw experiment assignment table.
+
+This allows the project to demonstrate a critical rule: when data quality fails, the workflow should not treat the experiment result as decision-ready evidence.
+
+Expected behavior:
+
+```text
+quality_status = FAIL
+final decision = Investigate
+```
 
 ## Claim Boundary
 
