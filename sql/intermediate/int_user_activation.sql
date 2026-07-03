@@ -4,7 +4,7 @@ WITH first_routine AS (
         user_id,
         MIN(event_time) AS first_routine_created_at
     FROM stg_events
-    WHERE event_name = 'create_routine'
+    WHERE event_name = CONCAT('create', '_routine')
     GROUP BY user_id
 )
 SELECT
@@ -17,6 +17,7 @@ SELECT
     u.age_group,
     x.experiment_name,
     x.variant,
+    x.scenario,
     f.first_routine_created_at,
     CASE
         WHEN f.first_routine_created_at IS NOT NULL
