@@ -1,7 +1,7 @@
 {
   "scenario": "strong_positive",
   "experiment_name": "onboarding_v2",
-  "generated_at": "2026-07-03T16:44:17.670683+00:00",
+  "generated_at": "2026-07-03T17:01:16.094931+00:00",
   "primary_metric": "activation_rate",
   "guardrail_metric": "d7_revisit_rate",
   "variant_a": {
