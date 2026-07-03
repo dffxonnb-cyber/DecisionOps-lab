@@ -18,7 +18,7 @@ from typing import Any
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 REPORTS_DIR = ROOT_DIR / "reports"
-SCENARIOS = ["strong_positive", "guardrail_risk", "weak_evidence", "neutral"]
+SCENARIOS = ["strong_positive", "guardrail_risk", "weak_evidence", "neutral", "quality_failure"]
 
 
 def run_command(args: list[str]) -> None:
@@ -26,19 +26,28 @@ def run_command(args: list[str]) -> None:
     subprocess.run(args, cwd=ROOT_DIR, check=True)
 
 
+def choose_decision(quality_status: str, experiment: dict[str, Any]) -> str:
+    if quality_status == "FAIL":
+        return "Investigate"
+    return str(experiment.get("suggested_decision", "Unknown"))
+
+
 def run_pipeline_for_scenario(scenario: str) -> dict[str, Any]:
     run_command([sys.executable, "scripts/generate_dataset.py", "--scenario", scenario])
     run_command([sys.executable, "scripts/run_pipeline.py"])
     run_command([sys.executable, "scripts/run_quality_checks.py"])
     run_command([sys.executable, "scripts/run_experiment_analysis.py"])
+    run_command([sys.executable, "scripts/generate_decision_memo.py"])
 
     experiment = json.loads((REPORTS_DIR / "experiment_result.json").read_text(encoding="utf-8"))
     quality = json.loads((REPORTS_DIR / "quality_report.json").read_text(encoding="utf-8"))
+    quality_status = str(quality.get("status"))
 
     return {
         "scenario": scenario,
-        "quality_status": quality.get("status"),
-        "decision": experiment.get("suggested_decision"),
+        "quality_status": quality_status,
+        "decision": choose_decision(quality_status, experiment),
+        "experiment_suggested_decision": experiment.get("suggested_decision"),
         "variant_a_activation": experiment.get("variant_a", {}).get("activation_rate"),
         "variant_b_activation": experiment.get("variant_b", {}).get("activation_rate"),
         "absolute_lift": experiment.get("absolute_lift"),
@@ -88,6 +97,7 @@ def build_markdown(rows: list[dict[str, Any]]) -> str:
             "- `guardrail_risk`: primary metric improves but D7 revisit weakens.",
             "- `weak_evidence`: primary metric improves only slightly.",
             "- `neutral`: primary metric does not improve meaningfully.",
+            "- `quality_failure`: raw experiment data contains invalid variant values, so quality checks fail.",
             "",
         ]
     )
@@ -118,7 +128,7 @@ def main() -> None:
     print("\nScenario matrix")
     print("-" * 48)
     for row in rows:
-        print(f"{row['scenario']:<16} {row['decision']:<8} lift={fmt_pct(row['absolute_lift'])} d7={fmt_pct(row['d7_revisit_delta'])}")
+        print(f"{row['scenario']:<16} {row['decision']:<12} quality={row['quality_status']:<4} lift={fmt_pct(row['absolute_lift'])} d7={fmt_pct(row['d7_revisit_delta'])}")
     print("-" * 48)
     print("Report: reports/scenario_matrix.md")
 
