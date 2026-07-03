@@ -37,6 +37,13 @@ Generated artifacts:
 - [`reports/decision_memo.md`](reports/decision_memo.md)
 - [`reports/review_report.html`](reports/review_report.html)
 
+Documentation guide:
+
+- [`docs/SCENARIO_MODE.md`](docs/SCENARIO_MODE.md) ? explains scenario generation and scenario matrix outputs.
+- [`docs/DECISION_RULES.md`](docs/DECISION_RULES.md) ? explains how quality, primary metric, and D7 revisit produce recommendations.
+- [`docs/MART_LAYER.md`](docs/MART_LAYER.md) ? explains final mart tables and their grains.
+
+
 --- | --- |
 | Decision | **Ship** |
 | Data quality | **PASS** |
