@@ -1,6 +1,6 @@
 {
   "experiment_name": "onboarding_v2",
-  "generated_at": "2026-07-03T14:27:59.526503+00:00",
+  "generated_at": "2026-07-03T14:35:25.648306+00:00",
   "primary_metric": "activation_rate",
   "guardrail_metric": "d7_revisit_rate",
   "variant_a": {
