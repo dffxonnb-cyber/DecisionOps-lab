@@ -39,6 +39,7 @@ Generated artifacts:
 
 Documentation guide:
 
+- [`docs/ARCHITECTURE_DIAGRAM.md`](docs/ARCHITECTURE_DIAGRAM.md) ? visualizes the end-to-end workflow, SQL layers, decision flow, and scenario matrix.
 - [`docs/CASE_STUDY.md`](docs/CASE_STUDY.md) ? summarizes the project as a portfolio case study.
 - [`docs/REVIEW_GUIDE.md`](docs/REVIEW_GUIDE.md) ? provides a 5-minute review path for portfolio reviewers.
 - [`docs/SCENARIO_MODE.md`](docs/SCENARIO_MODE.md) ? explains scenario generation and scenario matrix outputs.
