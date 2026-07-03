@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any
 
 import duckdb
-from statsmodels.stats.proportion import proportions_ztest, confint_proportions_2indep
+from statsmodels.stats.proportion import confint_proportions_2indep, proportions_ztest
 
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
@@ -23,6 +23,11 @@ EXPERIMENT_RESULT_PATH = REPORTS_DIR / "experiment_result.json"
 
 def pct(value: float) -> float:
     return round(float(value), 6)
+
+
+def fetch_scenario(connection: duckdb.DuckDBPyConnection) -> str:
+    value = connection.execute("SELECT MIN(scenario) FROM int_experiment_user_metrics").fetchone()[0]
+    return str(value or "unknown")
 
 
 def fetch_variant_summary(connection: duckdb.DuckDBPyConnection) -> dict[str, dict[str, Any]]:
@@ -112,6 +117,7 @@ def analyze() -> dict[str, Any]:
         raise FileNotFoundError("DuckDB file not found. Run `python scripts/run_pipeline.py` first.")
 
     with duckdb.connect(str(DB_PATH)) as connection:
+        scenario = fetch_scenario(connection)
         summary = fetch_variant_summary(connection)
         if "A" not in summary or "B" not in summary:
             raise ValueError("Experiment result requires both Variant A and Variant B.")
@@ -149,6 +155,7 @@ def analyze() -> dict[str, Any]:
         suggested_decision = "Hold"
 
     return {
+        "scenario": scenario,
         "experiment_name": "onboarding_v2",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "primary_metric": "activation_rate",
@@ -178,6 +185,7 @@ def main() -> None:
 
     print("\nExperiment analysis")
     print("-" * 56)
+    print(f"Scenario:             {result['scenario']}")
     print(f"Variant A activation: {result['variant_a']['activation_rate']:.2%}")
     print(f"Variant B activation: {result['variant_b']['activation_rate']:.2%}")
     print(f"Absolute lift:        {result['absolute_lift']:.2%}")
