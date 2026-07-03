@@ -33,6 +33,9 @@ def fetch_variant_summary(connection: duckdb.DuckDBPyConnection) -> dict[str, di
             COUNT(*) AS users,
             SUM(activated_24h) AS activated_users,
             AVG(activated_24h) AS activation_rate,
+            AVG(revisited_d1) AS d1_revisit_rate,
+            AVG(revisited_d3) AS d3_revisit_rate,
+            AVG(revisited_d7) AS d7_revisit_rate,
             AVG(session_count) AS avg_sessions,
             AVG(avg_session_seconds) AS avg_session_seconds
         FROM int_experiment_user_metrics
@@ -46,8 +49,11 @@ def fetch_variant_summary(connection: duckdb.DuckDBPyConnection) -> dict[str, di
             "users": int(row[1]),
             "activated_users": int(row[2]),
             "activation_rate": pct(row[3]),
-            "avg_sessions": pct(row[4]),
-            "avg_session_seconds": pct(row[5]),
+            "d1_revisit_rate": pct(row[4]),
+            "d3_revisit_rate": pct(row[5]),
+            "d7_revisit_rate": pct(row[6]),
+            "avg_sessions": pct(row[7]),
+            "avg_session_seconds": pct(row[8]),
         }
         for row in rows
     }
@@ -61,7 +67,8 @@ def fetch_segment_summary(connection: duckdb.DuckDBPyConnection, dimension: str)
             variant,
             COUNT(*) AS users,
             SUM(activated_24h) AS activated_users,
-            AVG(activated_24h) AS activation_rate
+            AVG(activated_24h) AS activation_rate,
+            AVG(revisited_d7) AS d7_revisit_rate
         FROM int_experiment_user_metrics
         GROUP BY {dimension}, variant
         ORDER BY {dimension}, variant
@@ -69,11 +76,12 @@ def fetch_segment_summary(connection: duckdb.DuckDBPyConnection, dimension: str)
     ).fetchall()
 
     grouped: dict[str, dict[str, Any]] = {}
-    for segment, variant, users, activated_users, activation_rate in rows:
+    for segment, variant, users, activated_users, activation_rate, d7_revisit_rate in rows:
         grouped.setdefault(str(segment), {})[str(variant)] = {
             "users": int(users),
             "activated_users": int(activated_users),
             "activation_rate": pct(activation_rate),
+            "d7_revisit_rate": pct(d7_revisit_rate),
         }
 
     output: list[dict[str, Any]] = []
@@ -82,6 +90,8 @@ def fetch_segment_summary(connection: duckdb.DuckDBPyConnection, dimension: str)
             continue
         rate_a = variants["A"]["activation_rate"]
         rate_b = variants["B"]["activation_rate"]
+        d7_a = variants["A"]["d7_revisit_rate"]
+        d7_b = variants["B"]["d7_revisit_rate"]
         output.append(
             {
                 "dimension": dimension,
@@ -90,6 +100,7 @@ def fetch_segment_summary(connection: duckdb.DuckDBPyConnection, dimension: str)
                 "variant_b": variants["B"],
                 "absolute_lift": pct(rate_b - rate_a),
                 "relative_lift": pct((rate_b - rate_a) / rate_a) if rate_a else None,
+                "d7_revisit_delta": pct(d7_b - d7_a),
             }
         )
 
@@ -122,21 +133,32 @@ def analyze() -> dict[str, Any]:
 
         absolute_lift = b["activation_rate"] - a["activation_rate"]
         relative_lift = absolute_lift / a["activation_rate"] if a["activation_rate"] else None
+        d7_revisit_delta = b["d7_revisit_rate"] - a["d7_revisit_rate"]
 
         segments = []
         for dimension in ["acquisition_channel", "device_type", "age_group"]:
             segments.extend(fetch_segment_summary(connection, dimension))
 
-    suggested_decision = "Ship" if absolute_lift > 0 and p_value < 0.05 else "Retest" if absolute_lift > 0 else "Hold"
+    guardrail_status = "PASS" if d7_revisit_delta >= -0.01 else "WARN"
+
+    if absolute_lift > 0 and p_value < 0.05 and guardrail_status == "PASS":
+        suggested_decision = "Ship"
+    elif absolute_lift > 0:
+        suggested_decision = "Retest"
+    else:
+        suggested_decision = "Hold"
 
     return {
         "experiment_name": "onboarding_v2",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "primary_metric": "activation_rate",
+        "guardrail_metric": "d7_revisit_rate",
         "variant_a": a,
         "variant_b": b,
         "absolute_lift": pct(absolute_lift),
         "relative_lift": pct(relative_lift) if relative_lift is not None else None,
+        "d7_revisit_delta": pct(d7_revisit_delta),
+        "guardrail_status": guardrail_status,
         "z_stat": pct(z_stat),
         "p_value": pct(p_value),
         "confidence_interval_absolute_lift": {
@@ -160,6 +182,8 @@ def main() -> None:
     print(f"Variant B activation: {result['variant_b']['activation_rate']:.2%}")
     print(f"Absolute lift:        {result['absolute_lift']:.2%}")
     print(f"Relative lift:        {result['relative_lift']:.2%}")
+    print(f"D7 revisit delta:     {result['d7_revisit_delta']:.2%}")
+    print(f"Guardrail status:     {result['guardrail_status']}")
     print(f"p-value:              {result['p_value']:.4f}")
     print(f"Suggested decision:   {result['suggested_decision']}")
     print("-" * 56)
