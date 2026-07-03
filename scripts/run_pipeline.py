@@ -1,7 +1,8 @@
 """Run the DecisionOps Lab SQL modeling pipeline.
 
-This script loads generated raw CSV files into DuckDB, runs SQL models in order,
-and writes a local analytics database to data/processed/decisionops.duckdb.
+This script loads generated raw CSV files into DuckDB, runs currently available
+SQL models in dependency order, and writes a local analytics database to
+`data/processed/decisionops.duckdb`.
 """
 
 from __future__ import annotations
@@ -34,12 +35,6 @@ SQL_MODEL_ORDER = [
     "sql/intermediate/int_user_retention.sql",
     "sql/intermediate/int_experiment_user_metrics.sql",
     "sql/intermediate/int_session_funnel.sql",
-    "sql/marts/mart_user_activation.sql",
-    "sql/marts/mart_funnel_daily.sql",
-    "sql/marts/mart_retention_cohort.sql",
-    "sql/marts/mart_experiment_result.sql",
-    "sql/marts/mart_segment_performance.sql",
-    "sql/marts/mart_decision_summary.sql",
 ]
 
 
@@ -68,7 +63,8 @@ def run_sql_models(connection: duckdb.DuckDBPyConnection) -> None:
     for relative_path in SQL_MODEL_ORDER:
         sql_path = ROOT_DIR / relative_path
         if not sql_path.exists():
-            raise FileNotFoundError(f"SQL model not found: {relative_path}")
+            print(f"skip missing SQL model: {relative_path}")
+            continue
         sql = sql_path.read_text(encoding="utf-8")
         connection.execute(sql)
         print(f"ran {relative_path}")
