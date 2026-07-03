@@ -54,6 +54,7 @@ def build_html(quality: dict[str, Any], experiment: dict[str, Any], memo: str) -
             break
 
     escaped_memo = html.escape(memo)
+    guardrail_status = html.escape(str(experiment.get("guardrail_status", "UNKNOWN")))
 
     return f"""
 <!doctype html>
@@ -108,6 +109,11 @@ def build_html(quality: dict[str, Any], experiment: dict[str, Any], memo: str) -
       font-weight: 700;
       margin-top: 8px;
     }}
+    .note {{
+      color: #cbd5e1;
+      font-size: 14px;
+      margin-top: 8px;
+    }}
     pre {{
       white-space: pre-wrap;
       overflow-wrap: anywhere;
@@ -137,15 +143,17 @@ def build_html(quality: dict[str, Any], experiment: dict[str, Any], memo: str) -
   <section class="hero">
     <p class="label">DecisionOps Lab</p>
     <h1>Raw events to product decision</h1>
-    <p>This report summarizes data quality, experiment evidence, and the final memo generated from synthetic product event data.</p>
+    <p>This report summarizes data quality, experiment evidence, guardrail status, and the final memo generated from synthetic product event data.</p>
   </section>
 
   <section class="grid">
     <div class="card"><div class="label">Decision</div><div class="value">{html.escape(decision)}</div></div>
     <div class="card"><div class="label">Quality</div><div class="value">{html.escape(str(quality.get('status', 'UNKNOWN')))}</div></div>
+    <div class="card"><div class="label">Guardrail</div><div class="value">{guardrail_status}</div><div class="note">D7 revisit rate</div></div>
     <div class="card"><div class="label">A activation</div><div class="value">{fmt_pct(variant_a.get('activation_rate'))}</div></div>
     <div class="card"><div class="label">B activation</div><div class="value">{fmt_pct(variant_b.get('activation_rate'))}</div></div>
     <div class="card"><div class="label">Absolute lift</div><div class="value">{fmt_pct(experiment.get('absolute_lift'))}</div></div>
+    <div class="card"><div class="label">D7 revisit delta</div><div class="value">{fmt_pct(experiment.get('d7_revisit_delta'))}</div></div>
     <div class="card"><div class="label">p-value</div><div class="value">{float(experiment.get('p_value', 1)):.4f}</div></div>
   </section>
 
@@ -156,6 +164,17 @@ def build_html(quality: dict[str, Any], experiment: dict[str, Any], memo: str) -
       <tr><th>Pass</th><td>{quality.get('summary', {}).get('pass', 0)}</td></tr>
       <tr><th>Warn</th><td>{quality.get('summary', {}).get('warn', 0)}</td></tr>
       <tr><th>Fail</th><td>{quality.get('summary', {}).get('fail', 0)}</td></tr>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2>Guardrail Summary</h2>
+    <table>
+      <tr><th>Metric</th><td>{html.escape(str(experiment.get('guardrail_metric', 'd7_revisit_rate')))}</td></tr>
+      <tr><th>Variant A D7 revisit</th><td>{fmt_pct(variant_a.get('d7_revisit_rate'))}</td></tr>
+      <tr><th>Variant B D7 revisit</th><td>{fmt_pct(variant_b.get('d7_revisit_rate'))}</td></tr>
+      <tr><th>Delta</th><td>{fmt_pct(experiment.get('d7_revisit_delta'))}</td></tr>
+      <tr><th>Status</th><td>{guardrail_status}</td></tr>
     </table>
   </section>
 
