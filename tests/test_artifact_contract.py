@@ -60,3 +60,5 @@ def test_review_report_exists() -> None:
     text = path.read_text(encoding="utf-8")
     assert "DecisionOps Lab" in text
     assert "Raw events to product decision" in text
+    assert "Mart Layer Summary" in text
+    assert "mart_decision_summary" in text
