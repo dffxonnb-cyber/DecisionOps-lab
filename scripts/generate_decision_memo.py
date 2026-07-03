@@ -31,10 +31,11 @@ def pick_result(quality: dict[str, Any], experiment: dict[str, Any]) -> str:
     quality_status = quality.get("status", "FAIL")
     lift = float(experiment.get("absolute_lift", 0))
     p_value = float(experiment.get("p_value", 1))
+    guardrail_status = experiment.get("guardrail_status", "WARN")
 
     if quality_status == "FAIL":
         return "Investigate"
-    if lift > 0 and p_value < 0.05:
+    if lift > 0 and p_value < 0.05 and guardrail_status == "PASS":
         return "Ship"
     if lift > 0:
         return "Retest"
@@ -46,11 +47,12 @@ def build_memo(quality: dict[str, Any], experiment: dict[str, Any]) -> str:
     variant_a = experiment.get("variant_a", {})
     variant_b = experiment.get("variant_b", {})
     ci = experiment.get("confidence_interval_absolute_lift", {})
+    guardrail_status = experiment.get("guardrail_status", "UNKNOWN")
 
     if result == "Ship":
-        summary = "Variant B improved the primary metric with strong evidence, and quality checks passed."
+        summary = "Variant B improved the primary metric with strong evidence, while the D7 revisit guardrail stayed within the acceptable range."
     elif result == "Retest":
-        summary = "Variant B moved the primary metric upward, but evidence should be strengthened."
+        summary = "Variant B moved the primary metric upward, but evidence or guardrail status should be strengthened before using the result as a product default."
     elif result == "Investigate":
         summary = "Quality checks did not pass, so the result needs investigation before use."
     else:
@@ -75,13 +77,17 @@ def build_memo(quality: dict[str, Any], experiment: dict[str, Any]) -> str:
         f"- Relative lift: {fmt_pct(experiment.get('relative_lift'))}",
         f"- p-value: {float(experiment.get('p_value', 1)):.4f}",
         f"- Confidence interval: {fmt_pct(ci.get('low'))} to {fmt_pct(ci.get('high'))}",
+        f"- Variant A D7 revisit: {fmt_pct(variant_a.get('d7_revisit_rate'))}",
+        f"- Variant B D7 revisit: {fmt_pct(variant_b.get('d7_revisit_rate'))}",
+        f"- D7 revisit delta: {fmt_pct(experiment.get('d7_revisit_delta'))}",
+        f"- Guardrail status: {guardrail_status}",
         f"- Quality status: {quality.get('status', 'UNKNOWN')}",
         "",
         "## Next Actions",
         "",
-        "1. Review the quality and experiment artifacts.",
+        "1. Review the quality, experiment, and guardrail artifacts.",
         "2. Check segment diagnostics before changing the product default.",
-        "3. Continue monitoring the primary metric after the next product change.",
+        "3. Continue monitoring activation and D7 revisit rate after the next product change.",
         "",
         "## Claim Boundary",
         "",
