@@ -18,13 +18,13 @@ def load_matrix() -> list[dict]:
 def test_scenario_matrix_has_all_expected_scenarios() -> None:
     rows = load_matrix()
     scenarios = {row["scenario"] for row in rows}
-    assert scenarios == {"strong_positive", "guardrail_risk", "weak_evidence", "neutral"}
+    assert scenarios == {"strong_positive", "guardrail_risk", "weak_evidence", "neutral", "quality_failure"}
 
 
 def test_scenario_matrix_has_multiple_decision_outcomes() -> None:
     rows = load_matrix()
     decisions = {row["decision"] for row in rows}
-    assert {"Ship", "Retest", "Hold"}.issubset(decisions)
+    assert {"Ship", "Retest", "Hold", "Investigate"}.issubset(decisions)
 
 
 def test_scenario_expected_decisions() -> None:
@@ -33,6 +33,7 @@ def test_scenario_expected_decisions() -> None:
     assert rows["guardrail_risk"]["decision"] == "Retest"
     assert rows["weak_evidence"]["decision"] == "Retest"
     assert rows["neutral"]["decision"] == "Hold"
+    assert rows["quality_failure"]["decision"] == "Investigate"
 
 
 def test_guardrail_risk_is_not_shipped() -> None:
@@ -41,3 +42,10 @@ def test_guardrail_risk_is_not_shipped() -> None:
     assert guardrail_risk["guardrail_status"] == "WARN"
     assert guardrail_risk["d7_revisit_delta"] < -0.01
     assert guardrail_risk["decision"] != "Ship"
+
+
+def test_quality_failure_is_not_interpreted_as_ship() -> None:
+    rows = {row["scenario"]: row for row in load_matrix()}
+    quality_failure = rows["quality_failure"]
+    assert quality_failure["quality_status"] == "FAIL"
+    assert quality_failure["decision"] == "Investigate"
