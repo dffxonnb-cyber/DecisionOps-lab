@@ -11,10 +11,33 @@ This project is intentionally not another domain-specific analysis project. It i
 
 ## V1 Evidence Snapshot
 
-DecisionOps Lab V1 now runs end-to-end from synthetic raw data to a reviewer-facing decision report.
+DecisionOps Lab V1.5 now runs end-to-end from synthetic raw data to a reviewer-facing decision report.
 
 | Evidence | Result |
 | --- | --- |
+| Decision | **Ship** |
+| Data quality | **PASS** |
+| D7 revisit check | **PASS** |
+| Primary metric | **Activation Rate** |
+| Secondary check | **D7 Revisit Rate** |
+| Variant A activation | **29.32%** |
+| Variant B activation | **34.58%** |
+| Absolute lift | **+5.26 percentage points** |
+| p-value | **0.0000** |
+| Raw users | **10,000** |
+| Raw events | **41,402** |
+| Raw sessions | **18,153** |
+
+V1.5 checks data quality first, compares the primary activation metric, reviews D7 revisit as a secondary stability check, and then generates a decision memo.
+
+Generated artifacts:
+
+- [`reports/quality_report.json`](reports/quality_report.json)
+- [`reports/experiment_result.json`](reports/experiment_result.json)
+- [`reports/decision_memo.md`](reports/decision_memo.md)
+- [`reports/review_report.html`](reports/review_report.html)
+
+--- | --- |
 | Decision | **Ship** |
 | Data quality | **PASS** |
 | Variant A activation | **29.32%** |
