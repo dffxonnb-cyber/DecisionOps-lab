@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import duckdb
+
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 REPORTS_DIR = ROOT_DIR / "reports"
@@ -11,6 +13,18 @@ PROCESSED_DB = ROOT_DIR / "data" / "processed" / "decisionops.duckdb"
 
 def test_processed_database_exists() -> None:
     assert PROCESSED_DB.exists(), "Expected data/processed/decisionops.duckdb to be generated."
+
+
+def test_final_mart_tables_exist() -> None:
+    expected_tables = {
+        "mart_experiment_result",
+        "mart_segment_performance",
+        "mart_retention_cohort",
+        "mart_decision_summary",
+    }
+    with duckdb.connect(str(PROCESSED_DB)) as connection:
+        tables = {row[0] for row in connection.execute("SHOW TABLES").fetchall()}
+    assert expected_tables.issubset(tables)
 
 
 def test_quality_report_passes() -> None:
@@ -26,6 +40,7 @@ def test_experiment_result_has_expected_shape() -> None:
     assert path.exists(), "Expected reports/experiment_result.json to be generated."
     result = json.loads(path.read_text(encoding="utf-8"))
     assert result["primary_metric"] == "activation_rate"
+    assert result["guardrail_metric"] == "d7_revisit_rate"
     assert "variant_a" in result
     assert "variant_b" in result
     assert result["absolute_lift"] > 0
