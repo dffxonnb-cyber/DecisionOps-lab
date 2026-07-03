@@ -39,6 +39,7 @@ Generated artifacts:
 
 Documentation guide:
 
+- [`docs/REVIEW_GUIDE.md`](docs/REVIEW_GUIDE.md) ? provides a 5-minute review path for portfolio reviewers.
 - [`docs/SCENARIO_MODE.md`](docs/SCENARIO_MODE.md) ? explains scenario generation and scenario matrix outputs.
 - [`docs/DECISION_RULES.md`](docs/DECISION_RULES.md) ? explains how quality, primary metric, and D7 revisit produce recommendations.
 - [`docs/MART_LAYER.md`](docs/MART_LAYER.md) ? explains final mart tables and their grains.
