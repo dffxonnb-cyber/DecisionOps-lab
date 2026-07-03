@@ -18,7 +18,11 @@ SELECT
     a.experiment_name,
     a.variant,
     a.activated_24h,
+    COALESCE(r.revisited_d1, 0) AS revisited_d1,
+    COALESCE(r.revisited_d3, 0) AS revisited_d3,
+    COALESCE(r.revisited_d7, 0) AS revisited_d7,
     COALESCE(s.session_count, 0) AS session_count,
     COALESCE(s.avg_session_seconds, 0) AS avg_session_seconds
 FROM int_user_activation a
+LEFT JOIN int_user_retention r ON a.user_id = r.user_id
 LEFT JOIN session_summary s ON a.user_id = s.user_id;
