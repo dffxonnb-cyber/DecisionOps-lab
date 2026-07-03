@@ -1,6 +1,8 @@
 CREATE OR REPLACE TABLE mart_decision_summary AS
 WITH variant_metrics AS (
     SELECT
+        scenario,
+        experiment_name,
         variant,
         users,
         activated_users,
@@ -10,6 +12,8 @@ WITH variant_metrics AS (
 ),
 comparison AS (
     SELECT
+        a.scenario,
+        a.experiment_name,
         a.users AS variant_a_users,
         b.users AS variant_b_users,
         a.activation_rate AS variant_a_activation_rate,
@@ -23,12 +27,15 @@ comparison AS (
         b.d7_revisit_rate AS variant_b_d7_revisit_rate,
         b.d7_revisit_rate - a.d7_revisit_rate AS d7_revisit_delta
     FROM variant_metrics a
-    CROSS JOIN variant_metrics b
+    JOIN variant_metrics b
+      ON a.scenario = b.scenario
+     AND a.experiment_name = b.experiment_name
     WHERE a.variant = 'A'
       AND b.variant = 'B'
 )
 SELECT
-    'onboarding_v2' AS experiment_name,
+    scenario,
+    experiment_name,
     variant_a_users,
     variant_b_users,
     variant_a_activation_rate,
