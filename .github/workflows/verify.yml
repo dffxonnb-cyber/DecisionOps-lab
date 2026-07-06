@@ -30,7 +30,7 @@ jobs:
       - name: Upload generated reports
         uses: actions/upload-artifact@v4
         with:
-          name: decisionops-v1-reports
+          name: decisionops-reports
           path: |
             reports/quality_report.json
             reports/experiment_result.json
