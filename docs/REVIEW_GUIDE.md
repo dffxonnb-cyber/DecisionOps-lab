@@ -56,6 +56,7 @@ The scenario matrix shows that the project is not hard-coded to one result.
 | `strong_positive` | Ship | Primary metric improves and guardrails remain stable |
 | `guardrail_risk` | Retest | Primary metric improves but D7 revisit weakens |
 | `refund_risk` | Retest | Primary metric improves but refund rate worsens |
+| `session_activity_risk` | Retest | Primary metric improves but average sessions per user drop |
 | `weak_evidence` | Retest | Primary metric improves only slightly |
 | `neutral` | Hold | Primary metric does not improve meaningfully |
 | `quality_failure` | Investigate | Data quality fails before evidence can be trusted |
