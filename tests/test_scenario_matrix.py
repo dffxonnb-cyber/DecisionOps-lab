@@ -63,9 +63,9 @@ def test_experiment_result_contains_multi_guardrail_schema() -> None:
 
     assert result["guardrail_metric"] == "multi_guardrail"
     assert result["guardrail_status"] in {"PASS", "WARN"}
-    assert {"d7_revisit", "refund_rate", "session_duration"}.issubset(guardrails)
+    assert {"d7_revisit", "refund_rate", "session_activity"}.issubset(guardrails)
     assert "refund_rate_delta" in result
-    assert "avg_session_seconds_delta" in result
+    assert "avg_sessions_delta" in result
 
     for guardrail in guardrails.values():
         assert guardrail["status"] in {"PASS", "WARN"}
