@@ -23,7 +23,7 @@ EXPERIMENT_RESULT_PATH = REPORTS_DIR / "experiment_result.json"
 
 D7_REVISIT_WARN_THRESHOLD = -0.01
 REFUND_RATE_WARN_THRESHOLD = 0.01
-SESSION_DURATION_RELATIVE_WARN_THRESHOLD = -0.05
+SESSION_ACTIVITY_RELATIVE_WARN_THRESHOLD = -0.05
 
 
 def pct(value: float) -> float:
@@ -136,8 +136,8 @@ def fetch_segment_summary(connection: duckdb.DuckDBPyConnection, dimension: str)
 def build_guardrails(a: dict[str, Any], b: dict[str, Any]) -> dict[str, dict[str, Any]]:
     d7_revisit_delta = b["d7_revisit_rate"] - a["d7_revisit_rate"]
     refund_rate_delta = b["refund_rate"] - a["refund_rate"]
-    session_seconds_delta = b["avg_session_seconds"] - a["avg_session_seconds"]
-    session_seconds_relative_delta = session_seconds_delta / a["avg_session_seconds"] if a["avg_session_seconds"] else None
+    session_activity_delta = b["avg_sessions"] - a["avg_sessions"]
+    session_activity_relative_delta = session_activity_delta / a["avg_sessions"] if a["avg_sessions"] else None
 
     return {
         "d7_revisit": {
@@ -156,17 +156,17 @@ def build_guardrails(a: dict[str, Any], b: dict[str, Any]) -> dict[str, dict[str
             "status": "PASS" if refund_rate_delta <= REFUND_RATE_WARN_THRESHOLD else "WARN",
             "threshold": "WARN if Variant B delta > +1 percentage point",
         },
-        "session_duration": {
-            "metric": "avg_session_seconds",
-            "variant_a": a["avg_session_seconds"],
-            "variant_b": b["avg_session_seconds"],
-            "delta": pct(session_seconds_delta),
-            "relative_delta": pct(session_seconds_relative_delta) if session_seconds_relative_delta is not None else None,
+        "session_activity": {
+            "metric": "avg_sessions",
+            "variant_a": a["avg_sessions"],
+            "variant_b": b["avg_sessions"],
+            "delta": pct(session_activity_delta),
+            "relative_delta": pct(session_activity_relative_delta) if session_activity_relative_delta is not None else None,
             "status": "PASS"
-            if session_seconds_relative_delta is None
-            or session_seconds_relative_delta >= SESSION_DURATION_RELATIVE_WARN_THRESHOLD
+            if session_activity_relative_delta is None
+            or session_activity_relative_delta >= SESSION_ACTIVITY_RELATIVE_WARN_THRESHOLD
             else "WARN",
-            "threshold": "WARN if Variant B average session duration drops by more than 5%",
+            "threshold": "WARN if Variant B average sessions per user drops by more than 5%",
         },
     }
 
@@ -204,10 +204,8 @@ def analyze() -> dict[str, Any]:
         relative_lift = absolute_lift / a["activation_rate"] if a["activation_rate"] else None
         d7_revisit_delta = b["d7_revisit_rate"] - a["d7_revisit_rate"]
         refund_rate_delta = b["refund_rate"] - a["refund_rate"]
-        avg_session_seconds_delta = b["avg_session_seconds"] - a["avg_session_seconds"]
-        avg_session_seconds_relative_delta = (
-            avg_session_seconds_delta / a["avg_session_seconds"] if a["avg_session_seconds"] else None
-        )
+        avg_sessions_delta = b["avg_sessions"] - a["avg_sessions"]
+        avg_sessions_relative_delta = avg_sessions_delta / a["avg_sessions"] if a["avg_sessions"] else None
 
         guardrails = build_guardrails(a, b)
         guardrail_status = summarize_guardrails(guardrails)
@@ -235,10 +233,8 @@ def analyze() -> dict[str, Any]:
         "relative_lift": pct(relative_lift) if relative_lift is not None else None,
         "d7_revisit_delta": pct(d7_revisit_delta),
         "refund_rate_delta": pct(refund_rate_delta),
-        "avg_session_seconds_delta": pct(avg_session_seconds_delta),
-        "avg_session_seconds_relative_delta": pct(avg_session_seconds_relative_delta)
-        if avg_session_seconds_relative_delta is not None
-        else None,
+        "avg_sessions_delta": pct(avg_sessions_delta),
+        "avg_sessions_relative_delta": pct(avg_sessions_relative_delta) if avg_sessions_relative_delta is not None else None,
         "guardrails": guardrails,
         "guardrail_status": guardrail_status,
         "z_stat": pct(z_stat),
@@ -267,7 +263,7 @@ def main() -> None:
     print(f"Relative lift:        {result['relative_lift']:.2%}")
     print(f"D7 revisit delta:     {result['d7_revisit_delta']:.2%}")
     print(f"Refund rate delta:    {result['refund_rate_delta']:.2%}")
-    print(f"Session seconds delta:{result['avg_session_seconds_delta']:.2f}")
+    print(f"Avg sessions delta:   {result['avg_sessions_delta']:.2f}")
     print(f"Guardrail status:     {result['guardrail_status']}")
     print(f"p-value:              {result['p_value']:.4f}")
     print(f"Suggested decision:   {result['suggested_decision']}")
