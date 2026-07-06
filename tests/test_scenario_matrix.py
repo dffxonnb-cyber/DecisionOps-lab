@@ -28,6 +28,7 @@ def test_scenario_matrix_has_all_expected_scenarios() -> None:
         "strong_positive",
         "guardrail_risk",
         "refund_risk",
+        "session_activity_risk",
         "weak_evidence",
         "neutral",
         "quality_failure",
@@ -45,6 +46,7 @@ def test_scenario_expected_decisions() -> None:
     assert rows["strong_positive"]["decision"] == "Ship"
     assert rows["guardrail_risk"]["decision"] == "Retest"
     assert rows["refund_risk"]["decision"] == "Retest"
+    assert rows["session_activity_risk"]["decision"] == "Retest"
     assert rows["weak_evidence"]["decision"] == "Retest"
     assert rows["neutral"]["decision"] == "Hold"
     assert rows["quality_failure"]["decision"] == "Investigate"
@@ -65,6 +67,16 @@ def test_refund_risk_is_not_shipped() -> None:
     assert refund_risk["guardrail_status"] == "WARN"
     assert refund_risk["refund_rate_delta"] > 0.01
     assert refund_risk["decision"] != "Ship"
+
+
+def test_session_activity_risk_is_not_shipped() -> None:
+    rows = {row["scenario"]: row for row in load_matrix()}
+    session_activity_risk = rows["session_activity_risk"]
+    assert session_activity_risk["quality_status"] in {"PASS", "WARN"}
+    assert session_activity_risk["guardrail_status"] == "WARN"
+    assert session_activity_risk["session_activity_status"] == "WARN"
+    assert session_activity_risk["avg_sessions_relative_delta"] < -0.05
+    assert session_activity_risk["decision"] != "Ship"
 
 
 def test_quality_failure_is_not_interpreted_as_ship() -> None:
