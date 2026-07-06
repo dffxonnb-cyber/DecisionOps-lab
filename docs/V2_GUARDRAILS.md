@@ -21,7 +21,7 @@ quality first
 | --- | --- | --- |
 | Retention | `d7_revisit_rate` | Variant B may increase activation but weaken later return behavior. |
 | Monetization quality | `refund_rate` | Variant B may push users into worse-fit conversion behavior. |
-| Engagement behavior | `avg_session_seconds` | Variant B may push users through onboarding too aggressively. |
+| Engagement behavior | `avg_sessions` | Variant B may reduce session activity after onboarding. |
 
 ## Portfolio Thresholds
 
@@ -31,7 +31,7 @@ These thresholds are intentionally simple. They are portfolio-level decision rul
 | --- | --- |
 | D7 revisit | WARN if Variant B delta is below -1 percentage point. |
 | Refund rate | WARN if Variant B delta is above +1 percentage point. |
-| Session duration | WARN if Variant B average session duration drops by more than 5%. |
+| Session activity | WARN if Variant B average sessions per user drops by more than 5%. |
 
 ## Recommendation Logic
 
