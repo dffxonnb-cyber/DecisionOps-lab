@@ -83,20 +83,20 @@
 <body>
 <main>
   <section class="hero">
-    <p class="label">DecisionOps Lab</p>
+    <p class="label">DecisionOps Lab · V2-1</p>
     <h1>Raw events to product decision</h1>
-    <p>This report summarizes data quality, mart layer outputs, experiment evidence, guardrail status, and the final memo generated from synthetic product event data.</p>
+    <p>This report summarizes data quality, mart layer outputs, experiment evidence, multi-guardrail status, and the final memo generated from synthetic product event data.</p>
   </section>
 
   <section class="grid">
     <div class="card"><div class="label">Decision</div><div class="value">Ship</div></div>
     <div class="card"><div class="label">Quality</div><div class="value">PASS</div></div>
-    <div class="card"><div class="label">Guardrail</div><div class="value">PASS</div><div class="note">D7 revisit rate</div></div>
+    <div class="card"><div class="label">Guardrail</div><div class="value">PASS</div><div class="note">D7 + refund + session activity</div></div>
     <div class="card"><div class="label">Mart tables</div><div class="value">4</div></div>
     <div class="card"><div class="label">A activation</div><div class="value">30.15%</div></div>
     <div class="card"><div class="label">B activation</div><div class="value">34.12%</div></div>
     <div class="card"><div class="label">Absolute lift</div><div class="value">3.97%</div></div>
-    <div class="card"><div class="label">D7 revisit delta</div><div class="value">0.97%</div></div>
+    <div class="card"><div class="label">Refund delta</div><div class="value">-0.02%</div></div>
     <div class="card"><div class="label">p-value</div><div class="value">0.0000</div></div>
   </section>
 
@@ -123,11 +123,11 @@
   <section class="card">
     <h2>Guardrail Summary</h2>
     <table>
-      <tr><th>Metric</th><td>d7_revisit_rate</td></tr>
-      <tr><th>Variant A D7 revisit</th><td>48.17%</td></tr>
-      <tr><th>Variant B D7 revisit</th><td>49.14%</td></tr>
-      <tr><th>Delta</th><td>0.97%</td></tr>
-      <tr><th>Status</th><td>PASS</td></tr>
+      <tr><th>Metric</th><th>Variant A</th><th>Variant B</th><th>Delta</th><th>Status</th></tr>
+      <tr><th>D7 revisit rate</th><td>48.17%</td><td>49.14%</td><td>0.97%</td><td>PASS</td></tr>
+<tr><th>Refund rate</th><td>0.22%</td><td>0.20%</td><td>-0.02%</td><td>PASS</td></tr>
+<tr><th>Avg sessions per user</th><td>1.81</td><td>1.85</td><td>0.04</td><td>PASS</td></tr>
+<tr><th>Overall</th><td colspan="2">Multi-guardrail review</td><td colspan="2">PASS</td></tr>
     </table>
   </section>
 
@@ -145,7 +145,7 @@ Ship
 
 ## Summary
 
-Variant B improved the primary metric with strong evidence, while the D7 revisit guardrail stayed within the acceptable range.
+Variant B improved the primary metric with strong evidence, and the multi-guardrail review did not show retention, refund, or engagement risk beyond the portfolio thresholds.
 
 ## Evidence
 
@@ -155,17 +155,20 @@ Variant B improved the primary metric with strong evidence, while the D7 revisit
 - Relative lift: 13.16%
 - p-value: 0.0000
 - Confidence interval: 2.14% to 5.80%
-- Variant A D7 revisit: 48.17%
-- Variant B D7 revisit: 49.14%
-- D7 revisit delta: 0.97%
-- Guardrail status: PASS
 - Quality status: PASS
+
+## Guardrail Review
+
+- D7 revisit: PASS (delta: 0.97%)
+- Refund rate: PASS (delta: -0.02%)
+- Session activity: PASS (delta: 0.04 sessions per user)
+- Overall guardrail status: PASS
 
 ## Next Actions
 
-1. Review the quality, experiment, and guardrail artifacts.
-2. Check segment diagnostics before changing the product default.
-3. Continue monitoring activation and D7 revisit rate after the next product change.
+1. Review segment diagnostics before rollout.
+2. Monitor activation, D7 revisit, refund rate, and session activity after launch.
+3. Keep the claim limited to this synthetic workflow demonstration.
 
 ## Claim Boundary
 
@@ -173,7 +176,7 @@ This memo uses synthetic data and demonstrates the workflow, not real product pe
 
 ## Generated At
 
-2026-07-03T17:01:16.529170+00:00
+2026-07-06T10:09:34.153084+00:00
 </pre>
   </section>
 </main>
