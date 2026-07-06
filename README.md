@@ -49,6 +49,7 @@ The project is not hard-coded to one positive result. The same pipeline runs acr
 | `strong_positive` | PASS | PASS | Ship | Strong lift with stable guardrails |
 | `guardrail_risk` | PASS | WARN | Retest | D7 revisit weakens despite activation lift |
 | `refund_risk` | PASS | WARN | Retest | Refund rate worsens despite activation lift |
+| `session_activity_risk` | PASS | WARN | Retest | Average sessions drop despite activation lift |
 | `weak_evidence` | PASS | PASS | Retest | Lift is positive but weak |
 | `neutral` | PASS | PASS | Hold | Variant B does not improve activation |
 | `quality_failure` | FAIL | PASS | Investigate | Data quality fails before interpretation |
