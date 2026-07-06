@@ -56,7 +56,7 @@ def run_pipeline_for_scenario(scenario: str) -> dict[str, Any]:
         "p_value": experiment.get("p_value"),
         "d7_revisit_delta": experiment.get("d7_revisit_delta"),
         "refund_rate_delta": experiment.get("refund_rate_delta"),
-        "session_duration_status": guardrails.get("session_duration", {}).get("status"),
+        "session_activity_status": guardrails.get("session_activity", {}).get("status"),
         "guardrail_status": experiment.get("guardrail_status"),
     }
 
@@ -87,7 +87,7 @@ def build_markdown(rows: list[dict[str, Any]]) -> str:
                 lift=fmt_pct(row["absolute_lift"]),
                 d7=fmt_pct(row["d7_revisit_delta"]),
                 refund=fmt_pct(row["refund_rate_delta"]),
-                session=row["session_duration_status"],
+                session=row["session_activity_status"],
                 guardrail=row["guardrail_status"],
                 decision=row["decision"],
             )
