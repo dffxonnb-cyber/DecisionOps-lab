@@ -1,4 +1,5 @@
 [![Verify DecisionOps Lab](https://github.com/dffxonnb-cyber/DecisionOps-lab/actions/workflows/verify.yml/badge.svg)](https://github.com/dffxonnb-cyber/DecisionOps-lab/actions/workflows/verify.yml)
+[![Reviewer Report](https://img.shields.io/badge/reviewer-report-2563eb)](https://dffxonnb-cyber.github.io/DecisionOps-lab/)
 
 # DecisionOps Lab
 
@@ -19,6 +20,7 @@ The default reviewer case is `strong_positive`, where Variant B improves activat
 
 | Evidence | Current Result |
 | --- | --- |
+| Public reviewer report | [Open report](https://dffxonnb-cyber.github.io/DecisionOps-lab/) |
 | Default decision | Ship |
 | Data quality | PASS |
 | Primary metric | Activation Rate |
@@ -31,7 +33,8 @@ The default reviewer case is `strong_positive`, where Variant B improves activat
 
 Generated reviewer artifacts:
 
-- [`reports/review_report.html`](reports/review_report.html) — reviewer-facing HTML report
+- [Public reviewer report](https://dffxonnb-cyber.github.io/DecisionOps-lab/) — published GitHub Pages version of the reviewer-facing HTML report
+- [`reports/review_report.html`](reports/review_report.html) — tracked reviewer-facing HTML report
 - [`reports/decision_memo.md`](reports/decision_memo.md) — final recommendation memo
 - [`reports/experiment_result.json`](reports/experiment_result.json) — A/B evidence and guardrail output
 - [`reports/quality_report.json`](reports/quality_report.json) — data quality checks
