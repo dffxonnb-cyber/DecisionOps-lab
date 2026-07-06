@@ -5,7 +5,7 @@
 > Most portfolio projects stop after analysis.  
 > DecisionOps Lab continues until a decision can be made.
 
-DecisionOps Lab is a product analytics and analytics engineering portfolio project that turns synthetic product event data into SQL models, metric definitions, data quality checks, A/B test results, guardrail review, and final decision memos.
+DecisionOps Lab is a product analytics and analytics engineering portfolio project that turns synthetic product event data into SQL models, metric definitions, data quality checks, A/B test results, multi-guardrail review, and final decision memos.
 
 This project is intentionally not another domain-specific analysis project. It is designed to show how a data team can move from raw events to trustworthy metrics and product decisions.
 
@@ -13,39 +13,61 @@ This project is intentionally not another domain-specific analysis project. It i
 
 ## Current Evidence Snapshot
 
-DecisionOps Lab runs end-to-end from synthetic raw data to a reviewer-facing decision report.
+DecisionOps Lab now demonstrates a V2 multi-guardrail decision workflow.
 
-| Evidence | Result |
+The default reviewer case is `strong_positive`, where Variant B improves activation and all guardrails pass.
+
+| Evidence | Current Result |
 | --- | --- |
-| Decision workflow | Ship / Retest / Hold / Investigate |
-| Data quality | PASS / WARN / FAIL checks before interpretation |
+| Default decision | Ship |
+| Data quality | PASS |
 | Primary metric | Activation Rate |
-| Guardrail review | D7 revisit, refund rate, session behavior |
-| SQL structure | Raw → staging → intermediate → mart |
-| Verification | One-command local runner + GitHub Actions |
+| Variant A activation | 30.15% |
+| Variant B activation | 34.12% |
+| Absolute lift | +3.97 percentage points |
+| Statistical evidence | p-value 0.0000 |
+| Guardrail review | PASS across D7 revisit, refund rate, and session activity |
+| Verification | `python scripts/run_full_verification.py` + GitHub Actions |
 
-The workflow checks data quality first, compares the primary activation metric, reviews guardrails, and then generates a decision memo.
+Generated reviewer artifacts:
 
-Generated artifacts:
+- [`reports/review_report.html`](reports/review_report.html) — reviewer-facing HTML report
+- [`reports/decision_memo.md`](reports/decision_memo.md) — final recommendation memo
+- [`reports/experiment_result.json`](reports/experiment_result.json) — A/B evidence and guardrail output
+- [`reports/quality_report.json`](reports/quality_report.json) — data quality checks
+- [`reports/scenario_matrix.md`](reports/scenario_matrix.md) — scenario-level decision matrix
+- [`reports/scenario_matrix.json`](reports/scenario_matrix.json) — machine-readable scenario matrix
 
-- [`reports/quality_report.json`](reports/quality_report.json)
-- [`reports/experiment_result.json`](reports/experiment_result.json)
-- [`reports/decision_memo.md`](reports/decision_memo.md)
-- [`reports/review_report.html`](reports/review_report.html)
-- [`reports/scenario_matrix.json`](reports/scenario_matrix.json)
-- [`reports/scenario_matrix.md`](reports/scenario_matrix.md)
+---
 
-Documentation guide:
+## Scenario Matrix
 
-- [`docs/V1_RELEASE_NOTES.md`](docs/V1_RELEASE_NOTES.md) — summarizes the completed V1 scope and V2 candidates.
-- [`docs/V2_GUARDRAILS.md`](docs/V2_GUARDRAILS.md) — explains the V2-1 multi-guardrail decision workflow.
-- [`docs/PORTFOLIO_PITCH.md`](docs/PORTFOLIO_PITCH.md) — translates the project into resume, portfolio, and interview language.
-- [`docs/ARCHITECTURE_DIAGRAM.md`](docs/ARCHITECTURE_DIAGRAM.md) — visualizes the end-to-end workflow, SQL layers, decision flow, and scenario matrix.
-- [`docs/CASE_STUDY.md`](docs/CASE_STUDY.md) — summarizes the project as a portfolio case study.
-- [`docs/REVIEW_GUIDE.md`](docs/REVIEW_GUIDE.md) — provides a 5-minute review path for portfolio reviewers.
+The project is not hard-coded to one positive result. The same pipeline runs across multiple synthetic decision situations.
+
+| Scenario | Quality | Guardrail | Decision | Purpose |
+| --- | --- | --- | --- | --- |
+| `strong_positive` | PASS | PASS | Ship | Strong lift with stable guardrails |
+| `guardrail_risk` | PASS | WARN | Retest | D7 revisit weakens despite activation lift |
+| `refund_risk` | PASS | WARN | Retest | Refund rate worsens despite activation lift |
+| `weak_evidence` | PASS | PASS | Retest | Lift is positive but weak |
+| `neutral` | PASS | PASS | Hold | Variant B does not improve activation |
+| `quality_failure` | FAIL | PASS | Investigate | Data quality fails before interpretation |
+
+DecisionOps Lab checks quality first, then primary metric evidence, then guardrails. A positive activation lift is not enough to Ship if downstream user behavior looks risky.
+
+---
+
+## Documentation Guide
+
+- [`docs/REVIEW_GUIDE.md`](docs/REVIEW_GUIDE.md) — 5-minute review path for portfolio reviewers.
+- [`docs/V2_GUARDRAILS.md`](docs/V2_GUARDRAILS.md) — explains the multi-guardrail decision workflow.
 - [`docs/SCENARIO_MODE.md`](docs/SCENARIO_MODE.md) — explains scenario generation and scenario matrix outputs.
 - [`docs/DECISION_RULES.md`](docs/DECISION_RULES.md) — explains how quality, primary metric, and guardrails produce recommendations.
 - [`docs/MART_LAYER.md`](docs/MART_LAYER.md) — explains final mart tables and their grains.
+- [`docs/PORTFOLIO_PITCH.md`](docs/PORTFOLIO_PITCH.md) — translates the project into resume, portfolio, and interview language.
+- [`docs/ARCHITECTURE_DIAGRAM.md`](docs/ARCHITECTURE_DIAGRAM.md) — visualizes the workflow, SQL layers, decision flow, and scenario matrix.
+- [`docs/CASE_STUDY.md`](docs/CASE_STUDY.md) — summarizes the project as a portfolio case study.
+- [`docs/V1_RELEASE_NOTES.md`](docs/V1_RELEASE_NOTES.md) — summarizes the completed V1 scope and later V2 direction.
 
 ---
 
@@ -62,9 +84,11 @@ raw product events
 → mart layer
 → data quality report
 → experiment analysis
-→ guardrail review
+→ multi-guardrail review
 → decision memo
 → reviewer report
+→ scenario matrix
+→ automated verification
 ```
 
 ---
@@ -114,12 +138,13 @@ Does Variant B increase the share of new users who create their first routine wi
 
 | Output | Description |
 | --- | --- |
-| Synthetic dataset | Reproducible product event data generated with a fixed seed |
+| Synthetic dataset | Reproducible product event data generated with fixed seeds and scenario modes |
 | SQL models | DuckDB-based raw loading, staging models, intermediate tables, and final marts |
 | Metric layer | Clear definitions for activation, retention, monetization, and guardrail metrics |
 | Data quality report | PASS / WARN / FAIL checks for row count, nulls, accepted values, referential integrity, duplicates, and experiment balance |
 | Experiment result | Variant A/B comparison, lift, statistical test, confidence interval, segment diagnostics, and guardrail review |
-| Decision memo | Ship / Hold / Retest / Investigate recommendation based on evidence and guardrails |
+| Scenario matrix | Ship / Retest / Hold / Investigate outcomes across multiple synthetic conditions |
+| Decision memo | Final recommendation based on data quality, evidence strength, and guardrails |
 | Reviewer report | Static HTML summary for quick portfolio review |
 
 ---
@@ -135,7 +160,7 @@ Does Variant B increase the share of new users who create their first routine wi
 | Reporting | Markdown, JSON, static HTML |
 | Documentation | Markdown |
 
-V1 starts with DuckDB and plain SQL. dbt Core can be added in a later V2 step after the decision workflow remains stable.
+The current implementation uses DuckDB and plain SQL to keep the workflow transparent and easy to review.
 
 ---
 
@@ -205,14 +230,22 @@ DecisionOps-lab/
 │   ├── scenario_matrix.json
 │   └── scenario_matrix.md
 ├── docs/
-│   ├── PROJECT_PLAN.md
-│   ├── ARCHITECTURE.md
-│   ├── METRICS.md
-│   ├── DATA_QUALITY.md
-│   ├── EXPERIMENT_DESIGN.md
+│   ├── REVIEW_GUIDE.md
+│   ├── V2_GUARDRAILS.md
+│   ├── SCENARIO_MODE.md
 │   ├── DECISION_RULES.md
 │   ├── MART_LAYER.md
-│   ├── V1_RELEASE_NOTES.md
-│   └── V2_GUARDRAILS.md
+│   ├── PORTFOLIO_PITCH.md
+│   ├── ARCHITECTURE_DIAGRAM.md
+│   ├── CASE_STUDY.md
+│   └── V1_RELEASE_NOTES.md
 └── tests/
 ```
+
+---
+
+## Claim Boundary
+
+DecisionOps Lab uses synthetic data. It does not claim real product performance, real business impact, or real user behavior.
+
+The claim is about workflow design: reproducible data modeling, metric definition, quality checks, experiment interpretation, guardrail-aware decision-making, and reviewer-facing communication.
