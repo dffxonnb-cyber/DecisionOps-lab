@@ -53,6 +53,12 @@ def fmt_pct(value: Any) -> str:
     return f"{float(value):.2%}"
 
 
+def fmt_number(value: Any) -> str:
+    if value is None:
+        return "n/a"
+    return f"{float(value):.2f}"
+
+
 def fetch_mart_counts() -> dict[str, int]:
     if not DB_PATH.exists():
         return {}
@@ -80,6 +86,54 @@ def build_mart_rows(mart_counts: dict[str, int]) -> str:
     return "\n".join(rows)
 
 
+def build_guardrail_rows(experiment: dict[str, Any]) -> str:
+    guardrails = experiment.get("guardrails", {})
+    rows = []
+
+    d7 = guardrails.get("d7_revisit", {})
+    rows.append(
+        "<tr>"
+        "<th>D7 revisit rate</th>"
+        f"<td>{fmt_pct(d7.get('variant_a'))}</td>"
+        f"<td>{fmt_pct(d7.get('variant_b'))}</td>"
+        f"<td>{fmt_pct(d7.get('delta'))}</td>"
+        f"<td>{html.escape(str(d7.get('status', 'UNKNOWN')))}</td>"
+        "</tr>"
+    )
+
+    refund = guardrails.get("refund_rate", {})
+    rows.append(
+        "<tr>"
+        "<th>Refund rate</th>"
+        f"<td>{fmt_pct(refund.get('variant_a'))}</td>"
+        f"<td>{fmt_pct(refund.get('variant_b'))}</td>"
+        f"<td>{fmt_pct(refund.get('delta'))}</td>"
+        f"<td>{html.escape(str(refund.get('status', 'UNKNOWN')))}</td>"
+        "</tr>"
+    )
+
+    session = guardrails.get("session_duration", {})
+    rows.append(
+        "<tr>"
+        "<th>Avg session seconds</th>"
+        f"<td>{fmt_number(session.get('variant_a'))}</td>"
+        f"<td>{fmt_number(session.get('variant_b'))}</td>"
+        f"<td>{fmt_number(session.get('delta'))}</td>"
+        f"<td>{html.escape(str(session.get('status', 'UNKNOWN')))}</td>"
+        "</tr>"
+    )
+
+    rows.append(
+        "<tr>"
+        "<th>Overall</th>"
+        "<td colspan=\"2\">Multi-guardrail review</td>"
+        f"<td colspan=\"2\">{html.escape(str(experiment.get('guardrail_status', 'UNKNOWN')))}</td>"
+        "</tr>"
+    )
+
+    return "\n".join(rows)
+
+
 def build_html(quality: dict[str, Any], experiment: dict[str, Any], memo: str, mart_counts: dict[str, int]) -> str:
     variant_a = experiment.get("variant_a", {})
     variant_b = experiment.get("variant_b", {})
@@ -93,6 +147,7 @@ def build_html(quality: dict[str, Any], experiment: dict[str, Any], memo: str, m
     escaped_memo = html.escape(memo)
     guardrail_status = html.escape(str(experiment.get("guardrail_status", "UNKNOWN")))
     mart_rows = build_mart_rows(mart_counts)
+    guardrail_rows = build_guardrail_rows(experiment)
 
     return f"""
 <!doctype html>
@@ -180,20 +235,20 @@ def build_html(quality: dict[str, Any], experiment: dict[str, Any], memo: str, m
 <body>
 <main>
   <section class="hero">
-    <p class="label">DecisionOps Lab</p>
+    <p class="label">DecisionOps Lab · V2-1</p>
     <h1>Raw events to product decision</h1>
-    <p>This report summarizes data quality, mart layer outputs, experiment evidence, guardrail status, and the final memo generated from synthetic product event data.</p>
+    <p>This report summarizes data quality, mart layer outputs, experiment evidence, multi-guardrail status, and the final memo generated from synthetic product event data.</p>
   </section>
 
   <section class="grid">
     <div class="card"><div class="label">Decision</div><div class="value">{html.escape(decision)}</div></div>
     <div class="card"><div class="label">Quality</div><div class="value">{html.escape(str(quality.get('status', 'UNKNOWN')))}</div></div>
-    <div class="card"><div class="label">Guardrail</div><div class="value">{guardrail_status}</div><div class="note">D7 revisit rate</div></div>
+    <div class="card"><div class="label">Guardrail</div><div class="value">{guardrail_status}</div><div class="note">D7 + refund + session behavior</div></div>
     <div class="card"><div class="label">Mart tables</div><div class="value">{len(mart_counts)}</div></div>
     <div class="card"><div class="label">A activation</div><div class="value">{fmt_pct(variant_a.get('activation_rate'))}</div></div>
     <div class="card"><div class="label">B activation</div><div class="value">{fmt_pct(variant_b.get('activation_rate'))}</div></div>
     <div class="card"><div class="label">Absolute lift</div><div class="value">{fmt_pct(experiment.get('absolute_lift'))}</div></div>
-    <div class="card"><div class="label">D7 revisit delta</div><div class="value">{fmt_pct(experiment.get('d7_revisit_delta'))}</div></div>
+    <div class="card"><div class="label">Refund delta</div><div class="value">{fmt_pct(experiment.get('refund_rate_delta'))}</div></div>
     <div class="card"><div class="label">p-value</div><div class="value">{float(experiment.get('p_value', 1)):.4f}</div></div>
   </section>
 
@@ -217,11 +272,8 @@ def build_html(quality: dict[str, Any], experiment: dict[str, Any], memo: str, m
   <section class="card">
     <h2>Guardrail Summary</h2>
     <table>
-      <tr><th>Metric</th><td>{html.escape(str(experiment.get('guardrail_metric', 'd7_revisit_rate')))}</td></tr>
-      <tr><th>Variant A D7 revisit</th><td>{fmt_pct(variant_a.get('d7_revisit_rate'))}</td></tr>
-      <tr><th>Variant B D7 revisit</th><td>{fmt_pct(variant_b.get('d7_revisit_rate'))}</td></tr>
-      <tr><th>Delta</th><td>{fmt_pct(experiment.get('d7_revisit_delta'))}</td></tr>
-      <tr><th>Status</th><td>{guardrail_status}</td></tr>
+      <tr><th>Metric</th><th>Variant A</th><th>Variant B</th><th>Delta</th><th>Status</th></tr>
+      {guardrail_rows}
     </table>
   </section>
 
