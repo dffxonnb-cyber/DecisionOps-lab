@@ -39,7 +39,7 @@ SCENARIOS: dict[str, dict[str, Any]] = {
         "seed_offset": 505,
         "variant_b_activation_lift": 0.055,
         "variant_b_revisit_adjustment": 0.00,
-        "variant_b_refund_adjustment": 0.18,
+        "variant_b_refund_adjustment": 0.55,
         "invalid_variant_rows": 0,
     },
     "weak_evidence": {
