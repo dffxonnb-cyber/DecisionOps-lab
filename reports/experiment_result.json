@@ -1,9 +1,9 @@
 {
   "scenario": "strong_positive",
   "experiment_name": "onboarding_v2",
-  "generated_at": "2026-07-03T17:01:16.094931+00:00",
+  "generated_at": "2026-07-06T10:09:33.994089+00:00",
   "primary_metric": "activation_rate",
-  "guardrail_metric": "d7_revisit_rate",
+  "guardrail_metric": "multi_guardrail",
   "variant_a": {
     "users": 4982,
     "activated_users": 1502,
@@ -12,7 +12,15 @@
     "d3_revisit_rate": 0.355279,
     "d7_revisit_rate": 0.481734,
     "avg_sessions": 1.813729,
-    "avg_session_seconds": 1860.113696
+    "avg_session_seconds": 1860.113696,
+    "trial_users": 371,
+    "trial_start_rate": 0.074468,
+    "paid_users": 155,
+    "paid_conversion_rate": 0.031112,
+    "refunded_users": 11,
+    "refund_rate": 0.002208,
+    "total_paid_amount": 1397500,
+    "total_refund_amount": 115900
   },
   "variant_b": {
     "users": 5018,
@@ -22,11 +30,49 @@
     "d3_revisit_rate": 0.373655,
     "d7_revisit_rate": 0.491431,
     "avg_sessions": 1.848745,
-    "avg_session_seconds": 1852.247941
+    "avg_session_seconds": 1852.247941,
+    "trial_users": 395,
+    "trial_start_rate": 0.078717,
+    "paid_users": 171,
+    "paid_conversion_rate": 0.034077,
+    "refunded_users": 10,
+    "refund_rate": 0.001993,
+    "total_paid_amount": 1404900,
+    "total_refund_amount": 82000
   },
   "absolute_lift": 0.039687,
   "relative_lift": 0.131638,
   "d7_revisit_delta": 0.009697,
+  "refund_rate_delta": -0.000215,
+  "avg_sessions_delta": 0.035016,
+  "avg_sessions_relative_delta": 0.019306,
+  "guardrails": {
+    "d7_revisit": {
+      "metric": "d7_revisit_rate",
+      "variant_a": 0.481734,
+      "variant_b": 0.491431,
+      "delta": 0.009697,
+      "status": "PASS",
+      "threshold": "WARN if Variant B delta < -1 percentage point"
+    },
+    "refund_rate": {
+      "metric": "refund_rate",
+      "variant_a": 0.002208,
+      "variant_b": 0.001993,
+      "delta": -0.000215,
+      "status": "PASS",
+      "threshold": "WARN if Variant B delta > +1 percentage point"
+    },
+    "session_activity": {
+      "metric": "avg_sessions",
+      "variant_a": 1.813729,
+      "variant_b": 1.848745,
+      "delta": 0.035016,
+      "relative_delta": 0.019306,
+      "status": "PASS",
+      "threshold": "WARN if Variant B average sessions per user drops by more than 5%"
+    }
+  },
   "guardrail_status": "PASS",
   "z_stat": 4.248928,
   "p_value": 1.1e-05,

@@ -11,6 +11,8 @@
       "relative_lift": 0.131638,
       "p_value": 1.1e-05,
       "d7_revisit_delta": 0.009697,
+      "refund_rate_delta": -0.000215,
+      "session_activity_status": "PASS",
       "guardrail_status": "PASS"
     },
     {
@@ -24,6 +26,23 @@
       "relative_lift": 0.107046,
       "p_value": 0.000191,
       "d7_revisit_delta": -0.161146,
+      "refund_rate_delta": 0.000809,
+      "session_activity_status": "WARN",
+      "guardrail_status": "WARN"
+    },
+    {
+      "scenario": "refund_risk",
+      "quality_status": "PASS",
+      "decision": "Retest",
+      "experiment_suggested_decision": "Retest",
+      "variant_a_activation": 0.294423,
+      "variant_b_activation": 0.352011,
+      "absolute_lift": 0.057588,
+      "relative_lift": 0.195596,
+      "p_value": 0.0,
+      "d7_revisit_delta": 0.001389,
+      "refund_rate_delta": 0.018413,
+      "session_activity_status": "PASS",
       "guardrail_status": "WARN"
     },
     {
@@ -37,6 +56,8 @@
       "relative_lift": 0.022458,
       "p_value": 0.23172,
       "d7_revisit_delta": 0.004633,
+      "refund_rate_delta": 0.001385,
+      "session_activity_status": "PASS",
       "guardrail_status": "PASS"
     },
     {
@@ -50,6 +71,8 @@
       "relative_lift": -0.010882,
       "p_value": 0.636708,
       "d7_revisit_delta": -0.009009,
+      "refund_rate_delta": 4.6e-05,
+      "session_activity_status": "PASS",
       "guardrail_status": "PASS"
     },
     {
@@ -63,6 +86,8 @@
       "relative_lift": 0.163686,
       "p_value": 0.0,
       "d7_revisit_delta": 0.012009,
+      "refund_rate_delta": -0.000995,
+      "session_activity_status": "PASS",
       "guardrail_status": "PASS"
     }
   ]
