@@ -112,10 +112,10 @@ def build_guardrail_rows(experiment: dict[str, Any]) -> str:
         "</tr>"
     )
 
-    session = guardrails.get("session_duration", {})
+    session = guardrails.get("session_activity", {})
     rows.append(
         "<tr>"
-        "<th>Avg session seconds</th>"
+        "<th>Avg sessions per user</th>"
         f"<td>{fmt_number(session.get('variant_a'))}</td>"
         f"<td>{fmt_number(session.get('variant_b'))}</td>"
         f"<td>{fmt_number(session.get('delta'))}</td>"
@@ -243,7 +243,7 @@ def build_html(quality: dict[str, Any], experiment: dict[str, Any], memo: str, m
   <section class="grid">
     <div class="card"><div class="label">Decision</div><div class="value">{html.escape(decision)}</div></div>
     <div class="card"><div class="label">Quality</div><div class="value">{html.escape(str(quality.get('status', 'UNKNOWN')))}</div></div>
-    <div class="card"><div class="label">Guardrail</div><div class="value">{guardrail_status}</div><div class="note">D7 + refund + session behavior</div></div>
+    <div class="card"><div class="label">Guardrail</div><div class="value">{guardrail_status}</div><div class="note">D7 + refund + session activity</div></div>
     <div class="card"><div class="label">Mart tables</div><div class="value">{len(mart_counts)}</div></div>
     <div class="card"><div class="label">A activation</div><div class="value">{fmt_pct(variant_a.get('activation_rate'))}</div></div>
     <div class="card"><div class="label">B activation</div><div class="value">{fmt_pct(variant_b.get('activation_rate'))}</div></div>
