@@ -10,7 +10,7 @@ Ship
 
 ## Summary
 
-Variant B improved the primary metric with strong evidence, while the D7 revisit guardrail stayed within the acceptable range.
+Variant B improved the primary metric with strong evidence, and the multi-guardrail review did not show retention, refund, or engagement risk beyond the portfolio thresholds.
 
 ## Evidence
 
@@ -20,17 +20,20 @@ Variant B improved the primary metric with strong evidence, while the D7 revisit
 - Relative lift: 13.16%
 - p-value: 0.0000
 - Confidence interval: 2.14% to 5.80%
-- Variant A D7 revisit: 48.17%
-- Variant B D7 revisit: 49.14%
-- D7 revisit delta: 0.97%
-- Guardrail status: PASS
 - Quality status: PASS
+
+## Guardrail Review
+
+- D7 revisit: PASS (delta: 0.97%)
+- Refund rate: PASS (delta: -0.02%)
+- Session activity: PASS (delta: 0.04 sessions per user)
+- Overall guardrail status: PASS
 
 ## Next Actions
 
-1. Review the quality, experiment, and guardrail artifacts.
-2. Check segment diagnostics before changing the product default.
-3. Continue monitoring activation and D7 revisit rate after the next product change.
+1. Review segment diagnostics before rollout.
+2. Monitor activation, D7 revisit, refund rate, and session activity after launch.
+3. Keep the claim limited to this synthetic workflow demonstration.
 
 ## Claim Boundary
 
@@ -38,4 +41,4 @@ This memo uses synthetic data and demonstrates the workflow, not real product pe
 
 ## Generated At
 
-2026-07-03T17:01:16.529170+00:00
+2026-07-06T10:09:34.153084+00:00
