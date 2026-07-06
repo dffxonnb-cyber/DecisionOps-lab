@@ -26,6 +26,7 @@ SCENARIOS: dict[str, dict[str, Any]] = {
         "variant_b_activation_lift": 0.055,
         "variant_b_revisit_adjustment": 0.00,
         "variant_b_refund_adjustment": 0.00,
+        "variant_b_session_activity_adjustment": 0.00,
         "invalid_variant_rows": 0,
     },
     "guardrail_risk": {
@@ -33,6 +34,7 @@ SCENARIOS: dict[str, dict[str, Any]] = {
         "variant_b_activation_lift": 0.055,
         "variant_b_revisit_adjustment": -0.12,
         "variant_b_refund_adjustment": 0.00,
+        "variant_b_session_activity_adjustment": 0.00,
         "invalid_variant_rows": 0,
     },
     "refund_risk": {
@@ -40,6 +42,15 @@ SCENARIOS: dict[str, dict[str, Any]] = {
         "variant_b_activation_lift": 0.055,
         "variant_b_revisit_adjustment": 0.00,
         "variant_b_refund_adjustment": 0.55,
+        "variant_b_session_activity_adjustment": 0.00,
+        "invalid_variant_rows": 0,
+    },
+    "session_activity_risk": {
+        "seed_offset": 606,
+        "variant_b_activation_lift": 0.055,
+        "variant_b_revisit_adjustment": 0.00,
+        "variant_b_refund_adjustment": 0.00,
+        "variant_b_session_activity_adjustment": -0.10,
         "invalid_variant_rows": 0,
     },
     "weak_evidence": {
@@ -47,6 +58,7 @@ SCENARIOS: dict[str, dict[str, Any]] = {
         "variant_b_activation_lift": 0.012,
         "variant_b_revisit_adjustment": 0.00,
         "variant_b_refund_adjustment": 0.00,
+        "variant_b_session_activity_adjustment": 0.00,
         "invalid_variant_rows": 0,
     },
     "neutral": {
@@ -54,6 +66,7 @@ SCENARIOS: dict[str, dict[str, Any]] = {
         "variant_b_activation_lift": -0.010,
         "variant_b_revisit_adjustment": 0.00,
         "variant_b_refund_adjustment": 0.00,
+        "variant_b_session_activity_adjustment": 0.00,
         "invalid_variant_rows": 0,
     },
     "quality_failure": {
@@ -61,6 +74,7 @@ SCENARIOS: dict[str, dict[str, Any]] = {
         "variant_b_activation_lift": 0.055,
         "variant_b_revisit_adjustment": 0.00,
         "variant_b_refund_adjustment": 0.00,
+        "variant_b_session_activity_adjustment": 0.00,
         "invalid_variant_rows": 25,
     },
 }
@@ -200,6 +214,7 @@ def create_events_and_sessions(
     activation_p = probability_adjustment(users_reset, experiments_reset, config)
     variant_by_user = dict(zip(experiments_reset["user_id"], experiments_reset["variant"], strict=True))
     revisit_shift = float(config.scenario_config["variant_b_revisit_adjustment"])
+    session_activity_shift = float(config.scenario_config.get("variant_b_session_activity_adjustment", 0.00))
 
     for idx, user in users_reset.iterrows():
         user_id = str(user["user_id"])
@@ -256,7 +271,12 @@ def create_events_and_sessions(
 
         for day in [1, 3, 7, 14]:
             day_weight = 0.92 if day == 1 else 0.75 if day == 3 else 0.58 if day == 7 else 0.40
-            if rng.random() < return_probability * day_weight:
+            day_return_probability = return_probability
+            if variant == "B" and day != 7:
+                day_return_probability += session_activity_shift
+            day_return_probability = float(np.clip(day_return_probability, 0.02, 0.80))
+
+            if rng.random() < day_return_probability * day_weight:
                 visit_time = signup_at + pd.Timedelta(days=day) + pd.to_timedelta(
                     int(rng.integers(0, 24 * 3600)), unit="s"
                 )

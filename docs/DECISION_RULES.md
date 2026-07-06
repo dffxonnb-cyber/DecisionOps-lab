@@ -42,9 +42,9 @@ ELSE:
 
 ## Why Multi-Guardrail Review Matters
 
-Activation can improve while later user behavior gets worse. For example, a more aggressive onboarding flow may push users to create a routine quickly, but reduce the chance that they return later.
+Activation can improve while later user behavior gets worse. For example, a more aggressive onboarding flow may push users to create a routine quickly, but reduce the chance that they return later, increase refund behavior, or reduce overall session activity.
 
-V2-1 extends the guardrail review beyond D7 revisit. It also checks refund rate and session activity so the recommendation is not based only on a short-term primary metric lift.
+The guardrail review checks D7 revisit, refund rate, and average sessions per user so the recommendation is not based only on a short-term primary metric lift.
 
 ## Guardrail Thresholds
 
@@ -63,6 +63,7 @@ These thresholds are intentionally simple and portfolio-level.
 | `strong_positive` | Ship | Activation improves and guardrails stay stable |
 | `guardrail_risk` | Retest | Activation improves, but D7 revisit weakens |
 | `refund_risk` | Retest | Activation improves, but refund rate worsens |
+| `session_activity_risk` | Retest | Activation improves, but average sessions per user drop |
 | `weak_evidence` | Retest | Activation improvement is too small or weak |
 | `neutral` | Hold | Activation does not improve meaningfully |
 | `quality_failure` | Investigate | Quality checks fail before evidence can be trusted |

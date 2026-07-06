@@ -1,6 +1,6 @@
-# V2-1 Multi-Guardrail Decision Workflow
+# V2 Multi-Guardrail Decision Workflow
 
-DecisionOps Lab V2-1 extends the V1 decision workflow from a single D7 revisit guardrail into a multi-guardrail review.
+DecisionOps Lab V2 extends the original decision workflow from a single D7 revisit guardrail into a multi-guardrail review.
 
 The goal is to show that the project does not recommend `Ship` only because the primary metric improves. A product decision should consider whether the improvement creates downstream risk.
 
@@ -53,6 +53,7 @@ ELSE:
 | `strong_positive` | Shows Ship when evidence is strong and guardrails pass | Ship |
 | `guardrail_risk` | Shows D7 revisit can block Ship | Retest |
 | `refund_risk` | Shows refund rate can block Ship | Retest |
+| `session_activity_risk` | Shows session activity can block Ship | Retest |
 | `weak_evidence` | Shows weak lift should not become Ship | Retest |
 | `neutral` | Shows no lift should become Hold | Hold |
 | `quality_failure` | Shows failed quality should become Investigate | Investigate |
@@ -68,6 +69,6 @@ ELSE:
 
 ## Claim Boundary
 
-This project uses synthetic data. V2-1 does not claim real product performance, real user behavior, or real business impact.
+This project uses synthetic data. V2 does not claim real product performance, real user behavior, or real business impact.
 
 The claim is that the workflow is reproducible, reviewable, and structured around safer product decision-making.

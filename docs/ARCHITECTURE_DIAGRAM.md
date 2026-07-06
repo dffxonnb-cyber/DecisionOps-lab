@@ -83,21 +83,23 @@ flowchart TD
     A[run_scenario_matrix.py] --> B[strong_positive]
     A --> C[guardrail_risk]
     A --> D[refund_risk]
-    A --> E[weak_evidence]
-    A --> F[neutral]
-    A --> G[quality_failure]
+    A --> E[session_activity_risk]
+    A --> F[weak_evidence]
+    A --> G[neutral]
+    A --> H[quality_failure]
 
-    B --> H[Ship]
-    C --> I[Retest]
-    D --> I
-    E --> I
-    F --> J[Hold]
-    G --> K[Investigate]
+    B --> I[Ship]
+    C --> J[Retest]
+    D --> J
+    E --> J
+    F --> J
+    G --> K[Hold]
+    H --> L[Investigate]
 
-    H --> L[scenario_matrix.md]
-    I --> L
-    J --> L
-    K --> L
+    I --> M[scenario_matrix.md]
+    J --> M
+    K --> M
+    L --> M
 ```
 
 ## Verification Flow
