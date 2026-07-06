@@ -12,6 +12,7 @@
       "p_value": 1.1e-05,
       "d7_revisit_delta": 0.009697,
       "refund_rate_delta": -0.000215,
+      "avg_sessions_relative_delta": 0.019306,
       "session_activity_status": "PASS",
       "guardrail_status": "PASS"
     },
@@ -27,6 +28,7 @@
       "p_value": 0.000191,
       "d7_revisit_delta": -0.161146,
       "refund_rate_delta": 0.000809,
+      "avg_sessions_relative_delta": -0.160868,
       "session_activity_status": "WARN",
       "guardrail_status": "WARN"
     },
@@ -42,7 +44,24 @@
       "p_value": 0.0,
       "d7_revisit_delta": 0.001389,
       "refund_rate_delta": 0.018413,
+      "avg_sessions_relative_delta": -0.001653,
       "session_activity_status": "PASS",
+      "guardrail_status": "WARN"
+    },
+    {
+      "scenario": "session_activity_risk",
+      "quality_status": "PASS",
+      "decision": "Retest",
+      "experiment_suggested_decision": "Retest",
+      "variant_a_activation": 0.295217,
+      "variant_b_activation": 0.347532,
+      "absolute_lift": 0.052315,
+      "relative_lift": 0.177209,
+      "p_value": 0.0,
+      "d7_revisit_delta": -0.115237,
+      "refund_rate_delta": 0.000782,
+      "avg_sessions_relative_delta": -0.106466,
+      "session_activity_status": "WARN",
       "guardrail_status": "WARN"
     },
     {
@@ -57,6 +76,7 @@
       "p_value": 0.23172,
       "d7_revisit_delta": 0.004633,
       "refund_rate_delta": 0.001385,
+      "avg_sessions_relative_delta": 0.004377,
       "session_activity_status": "PASS",
       "guardrail_status": "PASS"
     },
@@ -72,6 +92,7 @@
       "p_value": 0.636708,
       "d7_revisit_delta": -0.009009,
       "refund_rate_delta": 4.6e-05,
+      "avg_sessions_relative_delta": -0.008124,
       "session_activity_status": "PASS",
       "guardrail_status": "PASS"
     },
@@ -87,6 +108,7 @@
       "p_value": 0.0,
       "d7_revisit_delta": 0.012009,
       "refund_rate_delta": -0.000995,
+      "avg_sessions_relative_delta": 0.015993,
       "session_activity_status": "PASS",
       "guardrail_status": "PASS"
     }
