@@ -62,6 +62,7 @@ These thresholds are intentionally simple and portfolio-level.
 | --- | --- | --- |
 | `strong_positive` | Ship | Activation improves and guardrails stay stable |
 | `guardrail_risk` | Retest | Activation improves, but D7 revisit weakens |
+| `refund_risk` | Retest | Activation improves, but refund rate worsens |
 | `weak_evidence` | Retest | Activation improvement is too small or weak |
 | `neutral` | Hold | Activation does not improve meaningfully |
 | `quality_failure` | Investigate | Quality checks fail before evidence can be trusted |

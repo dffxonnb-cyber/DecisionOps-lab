@@ -25,30 +25,42 @@ SCENARIOS: dict[str, dict[str, Any]] = {
         "seed_offset": 0,
         "variant_b_activation_lift": 0.055,
         "variant_b_revisit_adjustment": 0.00,
+        "variant_b_refund_adjustment": 0.00,
         "invalid_variant_rows": 0,
     },
     "guardrail_risk": {
         "seed_offset": 101,
         "variant_b_activation_lift": 0.055,
         "variant_b_revisit_adjustment": -0.12,
+        "variant_b_refund_adjustment": 0.00,
+        "invalid_variant_rows": 0,
+    },
+    "refund_risk": {
+        "seed_offset": 505,
+        "variant_b_activation_lift": 0.055,
+        "variant_b_revisit_adjustment": 0.00,
+        "variant_b_refund_adjustment": 0.55,
         "invalid_variant_rows": 0,
     },
     "weak_evidence": {
         "seed_offset": 202,
         "variant_b_activation_lift": 0.012,
         "variant_b_revisit_adjustment": 0.00,
+        "variant_b_refund_adjustment": 0.00,
         "invalid_variant_rows": 0,
     },
     "neutral": {
         "seed_offset": 303,
         "variant_b_activation_lift": -0.010,
         "variant_b_revisit_adjustment": 0.00,
+        "variant_b_refund_adjustment": 0.00,
         "invalid_variant_rows": 0,
     },
     "quality_failure": {
         "seed_offset": 404,
         "variant_b_activation_lift": 0.055,
         "variant_b_revisit_adjustment": 0.00,
+        "variant_b_refund_adjustment": 0.00,
         "invalid_variant_rows": 25,
     },
 }
@@ -271,13 +283,22 @@ def create_events_and_sessions(
     return events_df, sessions_df
 
 
-def create_payments(users: pd.DataFrame, events: pd.DataFrame, rng: np.random.Generator) -> pd.DataFrame:
+def create_payments(
+    config: DatasetConfig,
+    users: pd.DataFrame,
+    events: pd.DataFrame,
+    experiments: pd.DataFrame,
+    rng: np.random.Generator,
+) -> pd.DataFrame:
     routine_users = set(events.loc[events["event_name"].eq("create_routine"), "user_id"])
+    variant_by_user = dict(zip(experiments["user_id"], experiments["variant"], strict=True))
+    refund_adjustment = float(config.scenario_config.get("variant_b_refund_adjustment", 0.00))
     records: list[dict[str, object]] = []
 
     for user in users.itertuples(index=False):
         user_id = str(user.user_id)
         signup_at = pd.Timestamp(user.signup_at)
+        variant = str(variant_by_user.get(user_id, "unknown"))
 
         if user_id not in routine_users:
             continue
@@ -307,7 +328,12 @@ def create_payments(users: pd.DataFrame, events: pd.DataFrame, rng: np.random.Ge
                     }
                 )
 
-                if rng.random() < 0.045:
+                refund_probability = 0.045
+                if variant == "B":
+                    refund_probability += refund_adjustment
+                refund_probability = float(np.clip(refund_probability, 0.00, 0.80))
+
+                if rng.random() < refund_probability:
                     refund_time = paid_time + pd.to_timedelta(int(rng.integers(1, 7)), unit="D")
                     records.append(
                         {
@@ -356,7 +382,7 @@ def main() -> None:
     users = create_users(config, rng)
     experiments = create_experiments(config, users, rng)
     events, sessions = create_events_and_sessions(config, users, experiments, rng)
-    payments = create_payments(users, events, rng)
+    payments = create_payments(config, users, events, experiments, rng)
 
     write_csv(users, RAW_DIR / "raw_users.csv")
     write_csv(events, RAW_DIR / "raw_events.csv")

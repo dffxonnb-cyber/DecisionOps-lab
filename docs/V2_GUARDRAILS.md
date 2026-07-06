@@ -46,6 +46,17 @@ ELSE:
     Hold
 ```
 
+## Scenario Coverage
+
+| Scenario | Guardrail Purpose | Expected Decision |
+| --- | --- | --- |
+| `strong_positive` | Shows Ship when evidence is strong and guardrails pass | Ship |
+| `guardrail_risk` | Shows D7 revisit can block Ship | Retest |
+| `refund_risk` | Shows refund rate can block Ship | Retest |
+| `weak_evidence` | Shows weak lift should not become Ship | Retest |
+| `neutral` | Shows no lift should become Hold | Hold |
+| `quality_failure` | Shows failed quality should become Investigate | Investigate |
+
 ## Main Artifacts
 
 | Artifact | Purpose |
