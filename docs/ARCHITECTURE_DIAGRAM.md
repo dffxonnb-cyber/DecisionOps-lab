@@ -15,14 +15,15 @@ flowchart TD
     E --> F[SQL Mart Tables]
     F --> G[Data Quality Checks]
     F --> H[Experiment Analysis]
-    G --> I[Decision Memo]
-    H --> I
-    I --> J[Reviewer HTML Report]
-    H --> K[Scenario Matrix]
-    G --> K
-    K --> L[Scenario Matrix Report]
-    J --> M[Portfolio Reviewer]
-    L --> M
+    H --> I[Multi-Guardrail Review]
+    G --> J[Decision Memo]
+    I --> J
+    J --> K[Reviewer HTML Report]
+    I --> L[Scenario Matrix]
+    G --> L
+    L --> M[Scenario Matrix Report]
+    K --> N[Portfolio Reviewer]
+    M --> N
 ```
 
 ## SQL Modeling Layers
@@ -42,14 +43,18 @@ flowchart LR
     B --> L[int_user_retention]
     D --> L
 
-    K --> M[int_experiment_user_metrics]
-    L --> M
-    F --> M
+    B --> M[int_user_monetization]
+    J --> M
 
-    M --> N[mart_experiment_result]
-    M --> O[mart_segment_performance]
-    L --> P[mart_retention_cohort]
-    N --> Q[mart_decision_summary]
+    K --> N[int_experiment_user_metrics]
+    L --> N
+    F --> N
+    M --> N
+
+    N --> O[mart_experiment_result]
+    N --> P[mart_segment_performance]
+    L --> Q[mart_retention_cohort]
+    O --> R[mart_decision_summary]
 ```
 
 ## Decision Rule Flow
@@ -62,9 +67,13 @@ flowchart TD
     D -->|No| E[Hold]
     D -->|Yes| F{p-value less than 0.05?}
     F -->|No| G[Retest]
-    F -->|Yes| H{D7 revisit check passes?}
+    F -->|Yes| H{All guardrails pass?}
     H -->|No| G
     H -->|Yes| I[Ship]
+
+    J[D7 revisit] --> H
+    K[Refund rate] --> H
+    L[Session activity] --> H
 ```
 
 ## Scenario Matrix Flow
@@ -73,20 +82,22 @@ flowchart TD
 flowchart TD
     A[run_scenario_matrix.py] --> B[strong_positive]
     A --> C[guardrail_risk]
-    A --> D[weak_evidence]
-    A --> E[neutral]
-    A --> F[quality_failure]
+    A --> D[refund_risk]
+    A --> E[weak_evidence]
+    A --> F[neutral]
+    A --> G[quality_failure]
 
-    B --> G[Ship]
-    C --> H[Retest]
-    D --> H
-    E --> I[Hold]
-    F --> J[Investigate]
+    B --> H[Ship]
+    C --> I[Retest]
+    D --> I
+    E --> I
+    F --> J[Hold]
+    G --> K[Investigate]
 
-    G --> K[scenario_matrix.md]
-    H --> K
-    I --> K
-    J --> K
+    H --> L[scenario_matrix.md]
+    I --> L
+    J --> L
+    K --> L
 ```
 
 ## Verification Flow
@@ -101,7 +112,8 @@ flowchart TD
     F --> G[Generate Reviewer Report]
     G --> H[Run Scenario Matrix]
     H --> I[Run Pytest]
-    I --> J[Verification Complete]
+    I --> J[Upload decisionops-reports Artifact]
+    J --> K[Verification Complete]
 ```
 
 ## Main Commands
@@ -137,8 +149,9 @@ Recommended review order:
 1. `reports/review_report.html`
 2. `reports/scenario_matrix.md`
 3. `docs/DECISION_RULES.md`
-4. `docs/MART_LAYER.md`
-5. `scripts/run_full_verification.py`
+4. `docs/V2_GUARDRAILS.md`
+5. `docs/MART_LAYER.md`
+6. `scripts/run_full_verification.py`
 
 ## Claim Boundary
 
