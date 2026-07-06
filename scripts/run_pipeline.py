@@ -33,6 +33,7 @@ SQL_MODEL_ORDER = [
     "sql/staging/stg_payments.sql",
     "sql/intermediate/int_user_activation.sql",
     "sql/intermediate/int_user_retention.sql",
+    "sql/intermediate/int_user_monetization.sql",
     "sql/intermediate/int_experiment_user_metrics.sql",
     "sql/intermediate/int_session_funnel.sql",
     "sql/marts/mart_experiment_result.sql",
