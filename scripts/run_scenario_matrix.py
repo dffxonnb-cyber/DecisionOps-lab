@@ -18,7 +18,15 @@ from typing import Any
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 REPORTS_DIR = ROOT_DIR / "reports"
-SCENARIOS = ["strong_positive", "guardrail_risk", "refund_risk", "weak_evidence", "neutral", "quality_failure"]
+SCENARIOS = [
+    "strong_positive",
+    "guardrail_risk",
+    "refund_risk",
+    "session_activity_risk",
+    "weak_evidence",
+    "neutral",
+    "quality_failure",
+]
 
 
 def run_command(args: list[str]) -> None:
@@ -56,6 +64,7 @@ def run_pipeline_for_scenario(scenario: str) -> dict[str, Any]:
         "p_value": experiment.get("p_value"),
         "d7_revisit_delta": experiment.get("d7_revisit_delta"),
         "refund_rate_delta": experiment.get("refund_rate_delta"),
+        "avg_sessions_relative_delta": experiment.get("avg_sessions_relative_delta"),
         "session_activity_status": guardrails.get("session_activity", {}).get("status"),
         "guardrail_status": experiment.get("guardrail_status"),
     }
@@ -73,13 +82,13 @@ def build_markdown(rows: list[dict[str, Any]]) -> str:
         "",
         "DecisionOps Lab runs the same pipeline across multiple synthetic experiment scenarios.",
         "",
-        "| Scenario | Quality | A Activation | B Activation | Lift | D7 Delta | Refund Delta | Session Guardrail | Overall Guardrail | Decision |",
-        "| --- | --- | ---: | ---: | ---: | ---: | ---: | --- | --- | --- |",
+        "| Scenario | Quality | A Activation | B Activation | Lift | D7 Delta | Refund Delta | Session Delta | Session Guardrail | Overall Guardrail | Decision |",
+        "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- | --- | --- |",
     ]
 
     for row in rows:
         lines.append(
-            "| {scenario} | {quality} | {a} | {b} | {lift} | {d7} | {refund} | {session} | {guardrail} | {decision} |".format(
+            "| {scenario} | {quality} | {a} | {b} | {lift} | {d7} | {refund} | {session_delta} | {session} | {guardrail} | {decision} |".format(
                 scenario=row["scenario"],
                 quality=row["quality_status"],
                 a=fmt_pct(row["variant_a_activation"]),
@@ -87,6 +96,7 @@ def build_markdown(rows: list[dict[str, Any]]) -> str:
                 lift=fmt_pct(row["absolute_lift"]),
                 d7=fmt_pct(row["d7_revisit_delta"]),
                 refund=fmt_pct(row["refund_rate_delta"]),
+                session_delta=fmt_pct(row["avg_sessions_relative_delta"]),
                 session=row["session_activity_status"],
                 guardrail=row["guardrail_status"],
                 decision=row["decision"],
@@ -101,6 +111,7 @@ def build_markdown(rows: list[dict[str, Any]]) -> str:
             "- `strong_positive`: primary metric improves and guardrails remain stable.",
             "- `guardrail_risk`: primary metric improves but D7 revisit weakens.",
             "- `refund_risk`: primary metric improves but refund rate increases enough to warn.",
+            "- `session_activity_risk`: primary metric improves but average sessions per user drop enough to warn.",
             "- `weak_evidence`: primary metric improves only slightly.",
             "- `neutral`: primary metric does not improve meaningfully.",
             "- `quality_failure`: raw experiment data contains invalid variant values, so quality checks fail.",
@@ -135,11 +146,12 @@ def main() -> None:
     print("-" * 48)
     for row in rows:
         print(
-            f"{row['scenario']:<16} {row['decision']:<12} "
+            f"{row['scenario']:<22} {row['decision']:<12} "
             f"quality={row['quality_status']:<4} "
             f"lift={fmt_pct(row['absolute_lift'])} "
             f"d7={fmt_pct(row['d7_revisit_delta'])} "
             f"refund={fmt_pct(row['refund_rate_delta'])} "
+            f"sessions={fmt_pct(row['avg_sessions_relative_delta'])} "
             f"guardrail={row['guardrail_status']}"
         )
     print("-" * 48)
