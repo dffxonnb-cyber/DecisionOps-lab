@@ -52,12 +52,12 @@ def build_guardrail_review(experiment: dict[str, Any]) -> list[str]:
     guardrails = experiment.get("guardrails", {})
     d7 = guardrails.get("d7_revisit", {})
     refund = guardrails.get("refund_rate", {})
-    session = guardrails.get("session_duration", {})
+    session = guardrails.get("session_activity", {})
 
     return [
         f"- D7 revisit: {d7.get('status', 'UNKNOWN')} (delta: {fmt_pct(d7.get('delta'))})",
         f"- Refund rate: {refund.get('status', 'UNKNOWN')} (delta: {fmt_pct(refund.get('delta'))})",
-        f"- Session duration: {session.get('status', 'UNKNOWN')} (delta: {fmt_number(session.get('delta'))} seconds)",
+        f"- Session activity: {session.get('status', 'UNKNOWN')} (delta: {fmt_number(session.get('delta'))} sessions per user)",
         f"- Overall guardrail status: {experiment.get('guardrail_status', 'UNKNOWN')}",
     ]
 
@@ -82,7 +82,7 @@ def build_next_actions(result: str) -> list[str]:
     if result == "Ship":
         return [
             "1. Review segment diagnostics before rollout.",
-            "2. Monitor activation, D7 revisit, refund rate, and session duration after launch.",
+            "2. Monitor activation, D7 revisit, refund rate, and session activity after launch.",
             "3. Keep the claim limited to this synthetic workflow demonstration.",
         ]
     if result == "Retest":
