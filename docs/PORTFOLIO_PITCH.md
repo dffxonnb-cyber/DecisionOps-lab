@@ -16,7 +16,7 @@ DecisionOps Lab is a product analytics project built around decision-making, not
 
 ## 1-Minute Interview Version
 
-I built DecisionOps Lab to show how raw product data can become decision-ready evidence. The synthetic product is a routine app testing a new onboarding variant. The pipeline generates raw event data, loads it into DuckDB, builds staging/intermediate/mart SQL tables, runs quality checks, and analyzes activation lift between Variant A and Variant B. The key point is that the recommendation is not based on activation alone. The workflow also checks D7 revisit, refund rate, and session activity as guardrails. If activation improves but downstream behavior worsens, the recommendation becomes Retest instead of Ship. To prove the logic is not hard-coded, I added scenario mode with strong-positive, retention-risk, refund-risk, weak-evidence, neutral, and quality-failure cases. GitHub Actions runs the full verification workflow.
+I built DecisionOps Lab to show how raw product data can become decision-ready evidence. The synthetic product is a routine app testing a new onboarding variant. The pipeline generates raw event data, loads it into DuckDB, builds staging/intermediate/mart SQL tables, runs quality checks, and analyzes activation lift between Variant A and Variant B. The key point is that the recommendation is not based on activation alone. The workflow also checks D7 revisit, refund rate, and session activity as guardrails. If activation improves but downstream behavior worsens, the recommendation becomes Retest instead of Ship. To prove the logic is not hard-coded, I added scenario mode with strong-positive, retention-risk, refund-risk, session-activity-risk, weak-evidence, neutral, and quality-failure cases. GitHub Actions runs the full verification workflow.
 
 ## 2-Minute Interview Version
 
@@ -28,7 +28,7 @@ The technical flow starts with a deterministic synthetic dataset generator. It c
 
 After modeling, the workflow runs quality checks for row counts, uniqueness, nulls, accepted values, relations, experiment balance, and metric ranges. Then the experiment analysis calculates activation lift, p-value, confidence interval, segment diagnostics, and guardrail deltas. The guardrail review checks D7 revisit behavior, refund rate, and average sessions per user. The recommendation is generated as a decision memo and displayed in a static reviewer report.
 
-The most important part is scenario mode. I added six synthetic scenarios: strong_positive, guardrail_risk, refund_risk, weak_evidence, neutral, and quality_failure. This proves that the workflow can produce Ship, Retest, Hold, and Investigate outcomes depending on the data condition. For example, `refund_risk` shows that Variant B can improve activation but still be sent to Retest when refund behavior worsens. The full workflow is reproducible with one command and verified through GitHub Actions.
+The most important part is scenario mode. I added seven synthetic scenarios: strong_positive, guardrail_risk, refund_risk, session_activity_risk, weak_evidence, neutral, and quality_failure. This proves that the workflow can produce Ship, Retest, Hold, and Investigate outcomes depending on the data condition. For example, `refund_risk` and `session_activity_risk` show that Variant B can improve activation but still be sent to Retest when downstream behavior worsens. The full workflow is reproducible with one command and verified through GitHub Actions.
 
 ## Role-Specific Positioning
 
@@ -115,12 +115,12 @@ Synthetic Data
 3. It uses retention, refund, and session activity as guardrails against short-term metric chasing.
 4. It includes SQL mart tables, not just pandas analysis.
 5. It uses scenario mode to prove that the decision logic changes across conditions.
-6. It includes a `refund_risk` scenario to show that a positive activation lift can still become Retest.
+6. It includes `refund_risk` and `session_activity_risk` scenarios to show that a positive activation lift can still become Retest.
 7. It is reproducible locally and in GitHub Actions.
 
 ## Short Korean Pitch
 
-DecisionOps Lab은 단순히 A/B 테스트 결과를 보여주는 프로젝트가 아니라, raw 이벤트 데이터를 SQL 모델링, 품질 검증, 실험 분석, 멀티 가드레일 검토, 의사결정 메모까지 연결한 Product Analytics / Analytics Engineering 프로젝트입니다. 특히 activation이 올라도 D7 재방문, 환불률, 세션 활동성이 나빠지면 바로 Ship하지 않도록 guardrail을 두었고, strong_positive, guardrail_risk, refund_risk, weak_evidence, neutral, quality_failure scenario를 통해 Ship, Retest, Hold, Investigate 판단이 실제로 갈리는지 검증했습니다.
+DecisionOps Lab은 단순히 A/B 테스트 결과를 보여주는 프로젝트가 아니라, raw 이벤트 데이터를 SQL 모델링, 품질 검증, 실험 분석, 멀티 가드레일 검토, 의사결정 메모까지 연결한 Product Analytics / Analytics Engineering 프로젝트입니다. 특히 activation이 올라도 D7 재방문, 환불률, 세션 활동성이 나빠지면 바로 Ship하지 않도록 guardrail을 두었고, strong_positive, guardrail_risk, refund_risk, session_activity_risk, weak_evidence, neutral, quality_failure scenario를 통해 Ship, Retest, Hold, Investigate 판단이 실제로 갈리는지 검증했습니다.
 
 ## Claim Boundary
 
