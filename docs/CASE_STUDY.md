@@ -49,7 +49,7 @@ raw product events
 | Guardrail review | D7 revisit, refund rate, session activity, and overall guardrail status |
 | Decision memo | Ship / Retest / Hold / Investigate recommendation |
 | Reviewer report | Static HTML report for quick portfolio review |
-| Scenario matrix | Six synthetic scenarios to test decision behavior |
+| Scenario matrix | Seven synthetic scenarios to test decision behavior |
 | CI verification | GitHub Actions workflow using one full verification runner |
 
 ## Key Artifacts
@@ -72,6 +72,7 @@ The scenario matrix is the strongest evidence that the project is not hard-coded
 | `strong_positive` | Ship | Activation improves and guardrails remain stable |
 | `guardrail_risk` | Retest | Activation improves but D7 revisit weakens |
 | `refund_risk` | Retest | Activation improves but refund rate worsens |
+| `session_activity_risk` | Retest | Activation improves but average sessions per user drop |
 | `weak_evidence` | Retest | Activation improves only slightly |
 | `neutral` | Hold | Activation does not improve meaningfully |
 | `quality_failure` | Investigate | Data quality fails before evidence can be trusted |
@@ -124,7 +125,6 @@ Possible next improvements:
 - Add more quality failure modes.
 - Add cohort-level experiment analysis.
 - Add saved sample data for reviewers who do not want to regenerate the dataset.
-- Add a dedicated session-activity risk scenario.
 
 ## Interview Pitch
 
