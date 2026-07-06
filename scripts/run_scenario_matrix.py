@@ -18,7 +18,7 @@ from typing import Any
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 REPORTS_DIR = ROOT_DIR / "reports"
-SCENARIOS = ["strong_positive", "guardrail_risk", "weak_evidence", "neutral", "quality_failure"]
+SCENARIOS = ["strong_positive", "guardrail_risk", "refund_risk", "weak_evidence", "neutral", "quality_failure"]
 
 
 def run_command(args: list[str]) -> None:
@@ -100,6 +100,7 @@ def build_markdown(rows: list[dict[str, Any]]) -> str:
             "",
             "- `strong_positive`: primary metric improves and guardrails remain stable.",
             "- `guardrail_risk`: primary metric improves but D7 revisit weakens.",
+            "- `refund_risk`: primary metric improves but refund rate increases enough to warn.",
             "- `weak_evidence`: primary metric improves only slightly.",
             "- `neutral`: primary metric does not improve meaningfully.",
             "- `quality_failure`: raw experiment data contains invalid variant values, so quality checks fail.",
