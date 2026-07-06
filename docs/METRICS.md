@@ -29,7 +29,7 @@ Every metric should answer:
 | Trial Start Rate | Trial users / signed-up users | Monetization entry |
 | Paid Conversion Rate | Paid users / assigned users | Monetization conversion |
 | Refund Rate | Refunded users / assigned users | Monetization quality guardrail |
-| Average Session Duration | Average session seconds per experiment user | Engagement behavior guardrail |
+| Average Sessions | Average sessions per experiment user | Engagement behavior guardrail |
 
 ---
 
@@ -62,7 +62,7 @@ This is the primary metric because the onboarding experiment is designed to help
 | --- | --- |
 | D7 Retention / Revisit | Activation can increase while return behavior drops |
 | Refund Rate | Conversion can increase with worse user fit |
-| Average Session Duration | New onboarding can push users through too aggressively |
+| Average Sessions | New onboarding can reduce session activity after signup |
 
 ---
 
@@ -92,7 +92,7 @@ V2-1 uses simple portfolio-level thresholds.
 | Activation lift <= 0 | No positive evidence |
 | D7 revisit delta < -1 percentage point | Retention guardrail risk |
 | Refund rate delta > +1 percentage point | Monetization quality risk |
-| Average session duration drops by more than 5% | Engagement behavior risk |
+| Average sessions per user drops by more than 5% | Engagement behavior risk |
 | Data quality status is FAIL | Decision should not proceed |
 
 These thresholds are portfolio-level simplifications, not universal business rules.
