@@ -15,7 +15,7 @@ The recommendation uses these inputs:
 | Statistical evidence | p-value and confidence interval | Checks whether the lift is strong enough to trust |
 | Retention guardrail | `d7_revisit_rate` | Checks whether short-term activation hurts later revisit behavior |
 | Monetization guardrail | `refund_rate` | Checks whether the treatment creates worse-fit monetization behavior |
-| Engagement guardrail | `avg_session_seconds` | Checks whether the new flow pushes users through too aggressively |
+| Engagement guardrail | `avg_sessions` | Checks whether the new flow reduces session activity |
 
 ## Decision Table
 
@@ -44,7 +44,7 @@ ELSE:
 
 Activation can improve while later user behavior gets worse. For example, a more aggressive onboarding flow may push users to create a routine quickly, but reduce the chance that they return later.
 
-V2-1 extends the guardrail review beyond D7 revisit. It also checks refund rate and session duration so the recommendation is not based only on a short-term primary metric lift.
+V2-1 extends the guardrail review beyond D7 revisit. It also checks refund rate and session activity so the recommendation is not based only on a short-term primary metric lift.
 
 ## Guardrail Thresholds
 
@@ -54,7 +54,7 @@ These thresholds are intentionally simple and portfolio-level.
 | --- | --- |
 | D7 revisit | Variant B delta < -1 percentage point |
 | Refund rate | Variant B delta > +1 percentage point |
-| Session duration | Variant B average session duration drops by more than 5% |
+| Session activity | Variant B average sessions per user drops by more than 5% |
 
 ## Scenario Examples
 
