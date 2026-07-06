@@ -5,32 +5,26 @@
 > Most portfolio projects stop after analysis.  
 > DecisionOps Lab continues until a decision can be made.
 
-DecisionOps Lab is a product analytics and analytics engineering portfolio project that turns synthetic product event data into SQL models, metric definitions, data quality checks, A/B test results, and final decision memos.
+DecisionOps Lab is a product analytics and analytics engineering portfolio project that turns synthetic product event data into SQL models, metric definitions, data quality checks, A/B test results, guardrail review, and final decision memos.
 
 This project is intentionally not another domain-specific analysis project. It is designed to show how a data team can move from raw events to trustworthy metrics and product decisions.
 
 ---
 
-## V1 Evidence Snapshot
+## Current Evidence Snapshot
 
-DecisionOps Lab V1.5 now runs end-to-end from synthetic raw data to a reviewer-facing decision report.
+DecisionOps Lab runs end-to-end from synthetic raw data to a reviewer-facing decision report.
 
 | Evidence | Result |
 | --- | --- |
-| Decision | **Ship** |
-| Data quality | **PASS** |
-| D7 revisit check | **PASS** |
-| Primary metric | **Activation Rate** |
-| Secondary check | **D7 Revisit Rate** |
-| Variant A activation | **29.32%** |
-| Variant B activation | **34.58%** |
-| Absolute lift | **+5.26 percentage points** |
-| p-value | **0.0000** |
-| Raw users | **10,000** |
-| Raw events | **41,402** |
-| Raw sessions | **18,153** |
+| Decision workflow | Ship / Retest / Hold / Investigate |
+| Data quality | PASS / WARN / FAIL checks before interpretation |
+| Primary metric | Activation Rate |
+| Guardrail review | D7 revisit, refund rate, session behavior |
+| SQL structure | Raw → staging → intermediate → mart |
+| Verification | One-command local runner + GitHub Actions |
 
-V1.5 checks data quality first, compares the primary activation metric, reviews D7 revisit as a secondary stability check, and then generates a decision memo.
+The workflow checks data quality first, compares the primary activation metric, reviews guardrails, and then generates a decision memo.
 
 Generated artifacts:
 
@@ -38,36 +32,20 @@ Generated artifacts:
 - [`reports/experiment_result.json`](reports/experiment_result.json)
 - [`reports/decision_memo.md`](reports/decision_memo.md)
 - [`reports/review_report.html`](reports/review_report.html)
+- [`reports/scenario_matrix.json`](reports/scenario_matrix.json)
+- [`reports/scenario_matrix.md`](reports/scenario_matrix.md)
 
 Documentation guide:
 
-- [`docs/V1_RELEASE_NOTES.md`](docs/V1_RELEASE_NOTES.md) ? summarizes the completed V1 scope and V2 candidates.
-- [`docs/PORTFOLIO_PITCH.md`](docs/PORTFOLIO_PITCH.md) ? translates the project into resume, portfolio, and interview language.
-- [`docs/ARCHITECTURE_DIAGRAM.md`](docs/ARCHITECTURE_DIAGRAM.md) ? visualizes the end-to-end workflow, SQL layers, decision flow, and scenario matrix.
-- [`docs/CASE_STUDY.md`](docs/CASE_STUDY.md) ? summarizes the project as a portfolio case study.
-- [`docs/REVIEW_GUIDE.md`](docs/REVIEW_GUIDE.md) ? provides a 5-minute review path for portfolio reviewers.
-- [`docs/SCENARIO_MODE.md`](docs/SCENARIO_MODE.md) ? explains scenario generation and scenario matrix outputs.
-- [`docs/DECISION_RULES.md`](docs/DECISION_RULES.md) ? explains how quality, primary metric, and D7 revisit produce recommendations.
-- [`docs/MART_LAYER.md`](docs/MART_LAYER.md) ? explains final mart tables and their grains.
-
-
---- | --- |
-| Decision | **Ship** |
-| Data quality | **PASS** |
-| Variant A activation | **29.32%** |
-| Variant B activation | **34.58%** |
-| Absolute lift | **+5.26 percentage points** |
-| p-value | **0.0000** |
-| Raw users | **10,000** |
-| Raw events | **41,402** |
-| Raw sessions | **18,153** |
-
-Generated artifacts:
-
-- [`reports/quality_report.json`](reports/quality_report.json)
-- [`reports/experiment_result.json`](reports/experiment_result.json)
-- [`reports/decision_memo.md`](reports/decision_memo.md)
-- [`reports/review_report.html`](reports/review_report.html)
+- [`docs/V1_RELEASE_NOTES.md`](docs/V1_RELEASE_NOTES.md) — summarizes the completed V1 scope and V2 candidates.
+- [`docs/V2_GUARDRAILS.md`](docs/V2_GUARDRAILS.md) — explains the V2-1 multi-guardrail decision workflow.
+- [`docs/PORTFOLIO_PITCH.md`](docs/PORTFOLIO_PITCH.md) — translates the project into resume, portfolio, and interview language.
+- [`docs/ARCHITECTURE_DIAGRAM.md`](docs/ARCHITECTURE_DIAGRAM.md) — visualizes the end-to-end workflow, SQL layers, decision flow, and scenario matrix.
+- [`docs/CASE_STUDY.md`](docs/CASE_STUDY.md) — summarizes the project as a portfolio case study.
+- [`docs/REVIEW_GUIDE.md`](docs/REVIEW_GUIDE.md) — provides a 5-minute review path for portfolio reviewers.
+- [`docs/SCENARIO_MODE.md`](docs/SCENARIO_MODE.md) — explains scenario generation and scenario matrix outputs.
+- [`docs/DECISION_RULES.md`](docs/DECISION_RULES.md) — explains how quality, primary metric, and guardrails produce recommendations.
+- [`docs/MART_LAYER.md`](docs/MART_LAYER.md) — explains final mart tables and their grains.
 
 ---
 
@@ -81,9 +59,10 @@ DecisionOps Lab answers this by implementing the following flow:
 raw product events
 → SQL staging models
 → intermediate analysis tables
-→ metric layer
+→ mart layer
 → data quality report
 → experiment analysis
+→ guardrail review
 → decision memo
 → reviewer report
 ```
@@ -100,7 +79,7 @@ Existing projects show domain-specific decision systems:
 | Shelter Signal | Public-data API service with freshness, cache, fallback, and PWA flow |
 | LH Traffic Safety | Spatial risk scoring and field-review priority design |
 | Starbucks Promotion | CRM event restructuring, prediction, recommendation, and dashboard story |
-| DecisionOps Lab | SQL modeling, metric layer, quality check, experiment analysis, and decision workflow |
+| DecisionOps Lab | SQL modeling, metric layer, quality check, experiment analysis, guardrail-aware decision workflow |
 
 DecisionOps Lab fills the missing technical layer: **how raw data becomes a reliable decision workflow inside a data team.**
 
@@ -121,6 +100,7 @@ signup
 → return_visit
 → trial_start
 → paid_conversion
+→ refund
 ```
 
 The product team is testing a new onboarding experience.
@@ -135,12 +115,12 @@ Does Variant B increase the share of new users who create their first routine wi
 | Output | Description |
 | --- | --- |
 | Synthetic dataset | Reproducible product event data generated with a fixed seed |
-| SQL models | DuckDB-based raw loading, staging models, and intermediate analysis tables |
-| Metric layer | Clear definitions for activation, retention, conversion, and guardrail metrics |
+| SQL models | DuckDB-based raw loading, staging models, intermediate tables, and final marts |
+| Metric layer | Clear definitions for activation, retention, monetization, and guardrail metrics |
 | Data quality report | PASS / WARN / FAIL checks for row count, nulls, accepted values, referential integrity, duplicates, and experiment balance |
-| Experiment result | Variant A/B activation comparison, lift, statistical test, confidence interval, and segment diagnostics |
-| Decision memo | Ship / Hold / Retest / Investigate recommendation based on evidence |
-| Reviewer report | HTML summary for quick portfolio review |
+| Experiment result | Variant A/B comparison, lift, statistical test, confidence interval, segment diagnostics, and guardrail review |
+| Decision memo | Ship / Hold / Retest / Investigate recommendation based on evidence and guardrails |
+| Reviewer report | Static HTML summary for quick portfolio review |
 
 ---
 
@@ -155,11 +135,19 @@ Does Variant B increase the share of new users who create their first routine wi
 | Reporting | Markdown, JSON, static HTML |
 | Documentation | Markdown |
 
-V1 starts with DuckDB and plain SQL. dbt Core can be added in V2 after the core pipeline is stable.
+V1 starts with DuckDB and plain SQL. dbt Core can be added in a later V2 step after the decision workflow remains stable.
 
 ---
 
 ## 6. How to Run
+
+Run the full verification workflow:
+
+```bash
+python scripts/run_full_verification.py
+```
+
+Or run the pipeline step by step:
 
 ```bash
 python scripts/generate_dataset.py
@@ -168,6 +156,8 @@ python scripts/run_quality_checks.py
 python scripts/run_experiment_analysis.py
 python scripts/generate_decision_memo.py
 python scripts/generate_review_report.py
+python scripts/run_scenario_matrix.py
+python -m pytest
 ```
 
 Expected local artifacts:
@@ -178,6 +168,8 @@ Expected local artifacts:
 - `reports/experiment_result.json`
 - `reports/decision_memo.md`
 - `reports/review_report.html`
+- `reports/scenario_matrix.json`
+- `reports/scenario_matrix.md`
 
 ---
 
@@ -198,7 +190,8 @@ DecisionOps-lab/
 │   ├── run_quality_checks.py
 │   ├── run_experiment_analysis.py
 │   ├── generate_decision_memo.py
-│   └── generate_review_report.py
+│   ├── generate_review_report.py
+│   └── run_scenario_matrix.py
 ├── sql/
 │   ├── staging/
 │   ├── intermediate/
@@ -208,88 +201,18 @@ DecisionOps-lab/
 │   ├── quality_report.json
 │   ├── experiment_result.json
 │   ├── decision_memo.md
-│   └── review_report.html
+│   ├── review_report.html
+│   ├── scenario_matrix.json
+│   └── scenario_matrix.md
 ├── docs/
 │   ├── PROJECT_PLAN.md
 │   ├── ARCHITECTURE.md
 │   ├── METRICS.md
 │   ├── DATA_QUALITY.md
 │   ├── EXPERIMENT_DESIGN.md
-│   └── DECISION_MEMO.md
+│   ├── DECISION_RULES.md
+│   ├── MART_LAYER.md
+│   ├── V1_RELEASE_NOTES.md
+│   └── V2_GUARDRAILS.md
 └── tests/
 ```
-
----
-
-## 8. Current Data Flow
-
-```text
-Synthetic product events
-↓
-Raw CSV files
-↓
-DuckDB raw tables
-↓
-SQL staging models
-↓
-Intermediate user/session/experiment models
-↓
-Data quality report
-↓
-Experiment result
-↓
-Decision memo
-↓
-Reviewer HTML report
-```
-
----
-
-## 9. Decision Logic
-
-The final recommendation is not based on a single metric.
-
-| Condition | Decision |
-| --- | --- |
-| Data quality fails | Investigate |
-| Primary metric improves with strong evidence | Ship |
-| Primary metric improves but evidence is weak | Retest |
-| Primary metric does not improve | Hold |
-
----
-
-## 10. Claim Boundary
-
-This project uses synthetic data. It does not claim real product performance, real user behavior, or real business impact.
-
-What it does claim:
-
-- A reproducible product analytics workflow
-- SQL-based data modeling
-- Data quality checks before decision-making
-- Experiment interpretation with statistical evidence
-- Decision memo generation from analytical evidence
-- Reviewer-facing report generation
-
----
-
-## 11. Project Status
-
-Current status: **V1 end-to-end pipeline complete**
-
-Completed:
-
-- Synthetic dataset generation
-- DuckDB loading and SQL staging/intermediate models
-- Data quality checks
-- Experiment analysis
-- Decision memo generation
-- Reviewer HTML report generation
-
-Next improvements:
-
-- Add GitHub Actions verification workflow
-- Improve retention SQL model
-- Add final mart tables
-- Add tests for quality check logic
-- Add optional dashboard or GitHub Pages deployment

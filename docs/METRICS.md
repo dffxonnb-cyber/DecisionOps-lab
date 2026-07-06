@@ -27,8 +27,9 @@ Every metric should answer:
 | D7 Retention | Users who returned within seven days after signup / signed-up users | Guardrail retention metric |
 | Routine Completion Rate | Completed routines / created routines | Routine usefulness |
 | Trial Start Rate | Trial users / signed-up users | Monetization entry |
-| Paid Conversion Rate | Paid users / trial users | Monetization conversion |
-| Refund Rate | Refunded paid users / paid users | Guardrail risk metric |
+| Paid Conversion Rate | Paid users / assigned users | Monetization conversion |
+| Refund Rate | Refunded users / assigned users | Monetization quality guardrail |
+| Average Sessions | Average sessions per experiment user | Engagement behavior guardrail |
 
 ---
 
@@ -53,14 +54,15 @@ This is the primary metric because the onboarding experiment is designed to help
 | Onboarding Completion Rate | Checks whether the new flow reduces onboarding friction |
 | Routine Completion Rate | Checks whether created routines are actually used |
 | Trial Start Rate | Checks whether activation connects to monetization intent |
+| Paid Conversion Rate | Checks whether activated users move toward paid intent |
 
 ### 3-3. Guardrail Metrics
 
 | Metric | Risk |
 | --- | --- |
-| D7 Retention | Activation can increase while retention drops |
+| D7 Retention / Revisit | Activation can increase while return behavior drops |
 | Refund Rate | Conversion can increase with worse user fit |
-| Session Drop-off | New onboarding can push users forward too aggressively |
+| Average Sessions | New onboarding can reduce session activity after signup |
 
 ---
 
@@ -81,15 +83,16 @@ Segment diagnostics should not replace the main experiment result. They are used
 
 ## 5. Decision Thresholds
 
-V1 uses simple decision thresholds.
+V2-1 uses simple portfolio-level thresholds.
 
 | Condition | Interpretation |
 | --- | --- |
-| Activation lift > 0 and p-value < 0.05 and guardrails stable | Strong positive evidence |
+| Activation lift > 0 and p-value < 0.05 and all guardrails pass | Strong positive evidence |
 | Activation lift > 0 and p-value between 0.05 and 0.10 | Directionally positive but weak |
 | Activation lift <= 0 | No positive evidence |
-| D7 retention drop is meaningful | Guardrail risk |
-| Refund rate increases meaningfully | Monetization quality risk |
+| D7 revisit delta < -1 percentage point | Retention guardrail risk |
+| Refund rate delta > +1 percentage point | Monetization quality risk |
+| Average sessions per user drops by more than 5% | Engagement behavior risk |
 | Data quality status is FAIL | Decision should not proceed |
 
 These thresholds are portfolio-level simplifications, not universal business rules.
@@ -106,4 +109,4 @@ The value of the project is in the workflow:
 - SQL implementation
 - data quality checks
 - experiment interpretation
-- decision memo generation
+- guardrail-aware decision memo generation

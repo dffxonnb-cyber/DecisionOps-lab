@@ -27,6 +27,12 @@ def fmt_pct(value: Any) -> str:
     return f"{float(value):.2%}"
 
 
+def fmt_number(value: Any) -> str:
+    if value is None:
+        return "n/a"
+    return f"{float(value):.2f}"
+
+
 def pick_result(quality: dict[str, Any], experiment: dict[str, Any]) -> str:
     quality_status = quality.get("status", "FAIL")
     lift = float(experiment.get("absolute_lift", 0))
@@ -42,22 +48,68 @@ def pick_result(quality: dict[str, Any], experiment: dict[str, Any]) -> str:
     return "Hold"
 
 
+def build_guardrail_review(experiment: dict[str, Any]) -> list[str]:
+    guardrails = experiment.get("guardrails", {})
+    d7 = guardrails.get("d7_revisit", {})
+    refund = guardrails.get("refund_rate", {})
+    session = guardrails.get("session_activity", {})
+
+    return [
+        f"- D7 revisit: {d7.get('status', 'UNKNOWN')} (delta: {fmt_pct(d7.get('delta'))})",
+        f"- Refund rate: {refund.get('status', 'UNKNOWN')} (delta: {fmt_pct(refund.get('delta'))})",
+        f"- Session activity: {session.get('status', 'UNKNOWN')} (delta: {fmt_number(session.get('delta'))} sessions per user)",
+        f"- Overall guardrail status: {experiment.get('guardrail_status', 'UNKNOWN')}",
+    ]
+
+
+def build_summary(result: str) -> str:
+    if result == "Ship":
+        return (
+            "Variant B improved the primary metric with strong evidence, and the multi-guardrail review did not show "
+            "retention, refund, or engagement risk beyond the portfolio thresholds."
+        )
+    if result == "Retest":
+        return (
+            "Variant B moved the primary metric upward, but the evidence or guardrail review is not strong enough "
+            "to use the result as a product default yet."
+        )
+    if result == "Investigate":
+        return "Quality checks did not pass, so the result needs investigation before use."
+    return "Variant B did not provide enough positive evidence on the primary metric."
+
+
+def build_next_actions(result: str) -> list[str]:
+    if result == "Ship":
+        return [
+            "1. Review segment diagnostics before rollout.",
+            "2. Monitor activation, D7 revisit, refund rate, and session activity after launch.",
+            "3. Keep the claim limited to this synthetic workflow demonstration.",
+        ]
+    if result == "Retest":
+        return [
+            "1. Identify which guardrail or evidence signal blocks Ship.",
+            "2. Review segment diagnostics for uneven lift or risk concentration.",
+            "3. Run a follow-up test before changing the product default.",
+        ]
+    if result == "Investigate":
+        return [
+            "1. Fix the failing quality checks first.",
+            "2. Rebuild the dataset and rerun the full workflow.",
+            "3. Do not interpret experiment evidence until quality status passes.",
+        ]
+    return [
+        "1. Keep Variant A as the default.",
+        "2. Review whether the treatment hypothesis should be redesigned.",
+        "3. Use segment diagnostics only as follow-up evidence, not as the main result.",
+    ]
+
+
 def build_memo(quality: dict[str, Any], experiment: dict[str, Any]) -> str:
     result = pick_result(quality, experiment)
     variant_a = experiment.get("variant_a", {})
     variant_b = experiment.get("variant_b", {})
     ci = experiment.get("confidence_interval_absolute_lift", {})
-    guardrail_status = experiment.get("guardrail_status", "UNKNOWN")
     scenario = experiment.get("scenario", "unknown")
-
-    if result == "Ship":
-        summary = "Variant B improved the primary metric with strong evidence, while the D7 revisit guardrail stayed within the acceptable range."
-    elif result == "Retest":
-        summary = "Variant B moved the primary metric upward, but evidence or guardrail status should be strengthened before using the result as a product default."
-    elif result == "Investigate":
-        summary = "Quality checks did not pass, so the result needs investigation before use."
-    else:
-        summary = "Variant B did not provide enough positive evidence on the primary metric."
 
     lines = [
         "# Decision Memo: Onboarding Variant B",
@@ -72,7 +124,7 @@ def build_memo(quality: dict[str, Any], experiment: dict[str, Any]) -> str:
         "",
         "## Summary",
         "",
-        summary,
+        build_summary(result),
         "",
         "## Evidence",
         "",
@@ -82,17 +134,15 @@ def build_memo(quality: dict[str, Any], experiment: dict[str, Any]) -> str:
         f"- Relative lift: {fmt_pct(experiment.get('relative_lift'))}",
         f"- p-value: {float(experiment.get('p_value', 1)):.4f}",
         f"- Confidence interval: {fmt_pct(ci.get('low'))} to {fmt_pct(ci.get('high'))}",
-        f"- Variant A D7 revisit: {fmt_pct(variant_a.get('d7_revisit_rate'))}",
-        f"- Variant B D7 revisit: {fmt_pct(variant_b.get('d7_revisit_rate'))}",
-        f"- D7 revisit delta: {fmt_pct(experiment.get('d7_revisit_delta'))}",
-        f"- Guardrail status: {guardrail_status}",
         f"- Quality status: {quality.get('status', 'UNKNOWN')}",
+        "",
+        "## Guardrail Review",
+        "",
+        *build_guardrail_review(experiment),
         "",
         "## Next Actions",
         "",
-        "1. Review the quality, experiment, and guardrail artifacts.",
-        "2. Check segment diagnostics before changing the product default.",
-        "3. Continue monitoring activation and D7 revisit rate after the next product change.",
+        *build_next_actions(result),
         "",
         "## Claim Boundary",
         "",

@@ -40,7 +40,8 @@ def test_experiment_result_has_expected_shape() -> None:
     assert path.exists(), "Expected reports/experiment_result.json to be generated."
     result = json.loads(path.read_text(encoding="utf-8"))
     assert result["primary_metric"] == "activation_rate"
-    assert result["guardrail_metric"] == "d7_revisit_rate"
+    assert result["guardrail_metric"] == "multi_guardrail"
+    assert {"d7_revisit", "refund_rate", "session_activity"}.issubset(result["guardrails"])
     assert "variant_a" in result
     assert "variant_b" in result
     assert result["absolute_lift"] > 0
@@ -52,6 +53,7 @@ def test_decision_memo_exists_and_contains_decision() -> None:
     text = path.read_text(encoding="utf-8")
     assert "## Decision" in text
     assert "## Evidence" in text
+    assert "## Guardrail Review" in text
 
 
 def test_review_report_exists() -> None:
@@ -61,4 +63,5 @@ def test_review_report_exists() -> None:
     assert "DecisionOps Lab" in text
     assert "Raw events to product decision" in text
     assert "Mart Layer Summary" in text
+    assert "Guardrail Summary" in text
     assert "mart_decision_summary" in text
