@@ -20,8 +20,9 @@ same pipeline
 
 | Scenario | Purpose | Expected Outcome |
 | --- | --- | --- |
-| `strong_positive` | Variant B improves activation and D7 revisit remains stable | Ship |
+| `strong_positive` | Variant B improves activation and guardrails remain stable | Ship |
 | `guardrail_risk` | Variant B improves activation but D7 revisit weakens | Retest |
+| `refund_risk` | Variant B improves activation but refund rate increases | Retest |
 | `weak_evidence` | Variant B improves activation only slightly | Retest |
 | `neutral` | Variant B does not improve activation meaningfully | Hold |
 | `quality_failure` | Raw experiment data contains invalid variant values | Investigate |
@@ -41,7 +42,7 @@ pytest
 Change the scenario name to run a different condition:
 
 ```bash
-python scripts/generate_dataset.py --scenario guardrail_risk
+python scripts/generate_dataset.py --scenario refund_risk
 ```
 
 ## How to Run the Full Matrix
@@ -62,7 +63,7 @@ After the matrix is generated, the script restores the default `strong_positive`
 
 ## Scenario Matrix Output
 
-The scenario matrix summarizes the decision workflow across five generated conditions:
+The scenario matrix summarizes the decision workflow across six generated conditions:
 
 | Field | Meaning |
 | --- | --- |
@@ -72,8 +73,25 @@ The scenario matrix summarizes the decision workflow across five generated condi
 | `variant_b_activation` | Treatment activation rate |
 | `absolute_lift` | Treatment minus baseline activation rate |
 | `d7_revisit_delta` | Treatment minus baseline D7 revisit rate |
-| `guardrail_status` | PASS or WARN for the D7 revisit check |
+| `refund_rate_delta` | Treatment minus baseline refund rate |
+| `session_activity_status` | PASS or WARN for the session activity guardrail |
+| `guardrail_status` | PASS or WARN for the overall multi-guardrail review |
 | `decision` | Final recommendation from the decision rule |
+
+## Guardrail Risk Scenarios
+
+The `guardrail_risk` scenario demonstrates that activation lift should not be enough to Ship if D7 revisit behavior weakens.
+
+The `refund_risk` scenario demonstrates that activation lift should not be enough to Ship if refund behavior worsens.
+
+Expected behavior:
+
+```text
+activation lift > 0
+quality_status = PASS or WARN
+guardrail_status = WARN
+final decision = Retest
+```
 
 ## Quality Failure Scenario
 
