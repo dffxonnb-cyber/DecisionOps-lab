@@ -19,7 +19,7 @@ raw CSV files
 
 | Mart | Grain | Purpose |
 | --- | --- | --- |
-| `mart_experiment_result` | One row per scenario, experiment, and variant | Summarizes A/B performance by variant |
+| `mart_experiment_result` | One row per scenario, experiment, and variant | Summarizes A/B performance, retention, monetization, and engagement guardrails by variant |
 | `mart_segment_performance` | One row per scenario, segment dimension, segment value, and variant | Compares activation and D7 revisit by segment |
 | `mart_retention_cohort` | One row per signup week | Summarizes D1, D3, and D7 revisit behavior by cohort |
 | `mart_decision_summary` | One row per scenario and experiment | Collects key metrics needed for recommendation review |
@@ -55,6 +55,14 @@ d3_revisit_rate
 d7_revisit_rate
 avg_sessions
 avg_session_seconds
+trial_users
+trial_start_rate
+paid_users
+paid_conversion_rate
+refunded_users
+refund_rate
+total_paid_amount
+total_refund_amount
 ```
 
 ### `mart_segment_performance`
@@ -117,6 +125,8 @@ evidence_status
 ## Reviewer Report Integration
 
 The reviewer HTML report reads the DuckDB database and displays the mart layer summary. This shows that the final artifacts are backed by SQL-modeled tables rather than one-off calculations.
+
+V2-1 also uses the expanded experiment mart to support multi-guardrail review across retention, monetization quality, and engagement behavior.
 
 ## Claim Boundary
 
