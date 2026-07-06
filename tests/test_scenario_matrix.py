@@ -24,7 +24,14 @@ def load_experiment_result() -> dict:
 def test_scenario_matrix_has_all_expected_scenarios() -> None:
     rows = load_matrix()
     scenarios = {row["scenario"] for row in rows}
-    assert scenarios == {"strong_positive", "guardrail_risk", "weak_evidence", "neutral", "quality_failure"}
+    assert scenarios == {
+        "strong_positive",
+        "guardrail_risk",
+        "refund_risk",
+        "weak_evidence",
+        "neutral",
+        "quality_failure",
+    }
 
 
 def test_scenario_matrix_has_multiple_decision_outcomes() -> None:
@@ -37,6 +44,7 @@ def test_scenario_expected_decisions() -> None:
     rows = {row["scenario"]: row for row in load_matrix()}
     assert rows["strong_positive"]["decision"] == "Ship"
     assert rows["guardrail_risk"]["decision"] == "Retest"
+    assert rows["refund_risk"]["decision"] == "Retest"
     assert rows["weak_evidence"]["decision"] == "Retest"
     assert rows["neutral"]["decision"] == "Hold"
     assert rows["quality_failure"]["decision"] == "Investigate"
@@ -48,6 +56,15 @@ def test_guardrail_risk_is_not_shipped() -> None:
     assert guardrail_risk["guardrail_status"] == "WARN"
     assert guardrail_risk["d7_revisit_delta"] < -0.01
     assert guardrail_risk["decision"] != "Ship"
+
+
+def test_refund_risk_is_not_shipped() -> None:
+    rows = {row["scenario"]: row for row in load_matrix()}
+    refund_risk = rows["refund_risk"]
+    assert refund_risk["quality_status"] in {"PASS", "WARN"}
+    assert refund_risk["guardrail_status"] == "WARN"
+    assert refund_risk["refund_rate_delta"] > 0.01
+    assert refund_risk["decision"] != "Ship"
 
 
 def test_quality_failure_is_not_interpreted_as_ship() -> None:
