@@ -23,6 +23,7 @@ same pipeline
 | `strong_positive` | Variant B improves activation and guardrails remain stable | Ship |
 | `guardrail_risk` | Variant B improves activation but D7 revisit weakens | Retest |
 | `refund_risk` | Variant B improves activation but refund rate increases | Retest |
+| `session_activity_risk` | Variant B improves activation but average sessions per user drop | Retest |
 | `weak_evidence` | Variant B improves activation only slightly | Retest |
 | `neutral` | Variant B does not improve activation meaningfully | Hold |
 | `quality_failure` | Raw experiment data contains invalid variant values | Investigate |
@@ -42,7 +43,7 @@ pytest
 Change the scenario name to run a different condition:
 
 ```bash
-python scripts/generate_dataset.py --scenario refund_risk
+python scripts/generate_dataset.py --scenario session_activity_risk
 ```
 
 ## How to Run the Full Matrix
@@ -63,7 +64,7 @@ After the matrix is generated, the script restores the default `strong_positive`
 
 ## Scenario Matrix Output
 
-The scenario matrix summarizes the decision workflow across six generated conditions:
+The scenario matrix summarizes the decision workflow across seven generated conditions:
 
 | Field | Meaning |
 | --- | --- |
@@ -74,6 +75,7 @@ The scenario matrix summarizes the decision workflow across six generated condit
 | `absolute_lift` | Treatment minus baseline activation rate |
 | `d7_revisit_delta` | Treatment minus baseline D7 revisit rate |
 | `refund_rate_delta` | Treatment minus baseline refund rate |
+| `avg_sessions_relative_delta` | Relative change in average sessions per user |
 | `session_activity_status` | PASS or WARN for the session activity guardrail |
 | `guardrail_status` | PASS or WARN for the overall multi-guardrail review |
 | `decision` | Final recommendation from the decision rule |
@@ -83,6 +85,8 @@ The scenario matrix summarizes the decision workflow across six generated condit
 The `guardrail_risk` scenario demonstrates that activation lift should not be enough to Ship if D7 revisit behavior weakens.
 
 The `refund_risk` scenario demonstrates that activation lift should not be enough to Ship if refund behavior worsens.
+
+The `session_activity_risk` scenario demonstrates that activation lift should not be enough to Ship if average sessions per user drop materially after onboarding.
 
 Expected behavior:
 
