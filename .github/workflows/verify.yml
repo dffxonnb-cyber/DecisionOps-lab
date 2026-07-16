@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -26,6 +28,9 @@ jobs:
 
       - name: Run full verification
         run: python scripts/run_full_verification.py
+
+      - name: Check tracked report freshness
+        run: python scripts/check_report_freshness.py
 
       - name: Upload generated reports
         uses: actions/upload-artifact@v4
