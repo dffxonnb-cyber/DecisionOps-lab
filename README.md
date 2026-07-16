@@ -27,9 +27,9 @@ The default reviewer case is `strong_positive`, where Variant B improves activat
 | Variant A activation | 30.15% |
 | Variant B activation | 34.12% |
 | Absolute lift | +3.97 percentage points |
-| Statistical evidence | p-value 0.0000 |
+| Statistical evidence | p-value 0.000011 |
 | Guardrail review | PASS across D7 revisit, refund rate, and session activity |
-| Verification | `python scripts/run_full_verification.py` + GitHub Actions |
+| Verification | full workflow + semantic report freshness check + GitHub Actions |
 
 Generated reviewer artifacts:
 
@@ -170,11 +170,14 @@ The current implementation uses DuckDB and plain SQL to keep the workflow transp
 
 ## 6. How to Run
 
-Run the full verification workflow:
+Run the full verification workflow and confirm that tracked reviewer reports are still semantically current:
 
 ```bash
 python scripts/run_full_verification.py
+python scripts/check_report_freshness.py
 ```
+
+The freshness check compares regenerated artifacts with the versions committed at `HEAD`. It normalizes only volatile `generated_at` timestamps; any changed metric, guardrail, scenario decision, memo copy, or HTML report content still fails the check.
 
 Or run the pipeline step by step:
 
@@ -187,6 +190,7 @@ python scripts/generate_decision_memo.py
 python scripts/generate_review_report.py
 python scripts/run_scenario_matrix.py
 python -m pytest
+python scripts/check_report_freshness.py
 ```
 
 Expected local artifacts:
@@ -220,7 +224,9 @@ DecisionOps-lab/
 │   ├── run_experiment_analysis.py
 │   ├── generate_decision_memo.py
 │   ├── generate_review_report.py
-│   └── run_scenario_matrix.py
+│   ├── run_scenario_matrix.py
+│   ├── run_full_verification.py
+│   └── check_report_freshness.py
 ├── sql/
 │   ├── staging/
 │   ├── intermediate/
